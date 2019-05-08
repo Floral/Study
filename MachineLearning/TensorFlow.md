@@ -86,7 +86,7 @@ w~n+1~=w~n~-learning_rate*d(loss)
 
 set a suitable learning rate is very important!
 
-
+We can also use 
 
 ### Moving Average
 
@@ -94,7 +94,26 @@ also is called shadow value
 
 ### Regularization
 
-regularization is to solve the overfitting problem
+regularization is to solve the overfitting problem.
 
 
 
+
+
+## CNN(Convolutional neural network)
+
+CNN is used to extract features to reduce the number of intermediate parameters.
+
+
+
+### Some Main Module
+
+#### 1.Convolutional
+
+#### 2.Activation
+
+#### 3.Pooling
+
+#### 4.Fully connection
+
+1 to 3 modules are used to extract features
