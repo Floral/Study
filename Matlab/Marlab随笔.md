@@ -101,3 +101,15 @@ end
 
 求微分方程的解析解
 
+
+
+## Matlab编程遇到的一些坑
+
+### Octave和Matlab的数据互通问题
+
+Octave的save命令保存的默认文件格式不能用Matlab打开，会报错。所以在Octave保存变量的时候要加一个参数'-mat7-binary'。实例：
+
+```matlab
+save('-mat7-binary','parameter_name');
+```
+
