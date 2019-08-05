@@ -32,7 +32,7 @@ void guess(char c)
         left-=num;
     }
     
-    if (!chance)
+    if (chance == 0)
     {
         lose = 1;
     }
@@ -40,7 +40,6 @@ void guess(char c)
     {
         win = 1;
     }
-    printf("%d %d\n",left,chance);
 }
 
 int main()

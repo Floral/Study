@@ -2,30 +2,33 @@
 #define SCREEN
 #include<string>
 #include<iostream>
+#include"Window_mgr.h"
 
 using std::cin; using std::cout; using std::endl;
 using std::string;
 
 class Screen{
+    friend class Window_mgr;
 public:
     typedef std::string::size_type pos;
     Screen() = default;
     Screen(pos ht, pos wd):height(ht),width(wd),contents(ht*wd, ' '){}
     Screen(pos ht, pos wd, char c):height(ht),width(wd),contents(ht*wd,c){}
-
-    char get() const
     {
         return contents[cursor];
     }
     inline char get(pos ht, pos wd) const;
+    
+    pos size() const;
+    
     Screen &move(pos r, pos c);
     Screen &set(char);
     Screen &set(pos, pos, char);
-
     Screen &display(std::ostream &os)
     {do_display(os); return *this;}
     const Screen &display(std::ostream &os) const
     {do_display(os); return *this;}
+
 private:
     pos cursor = 0;
     pos height = 0,width = 0;
@@ -47,6 +50,8 @@ char Screen::get(pos r, pos c) const
     pos row = r*width;
     return contents[row+c];
 }
+
+Screen::pos Screen::size() const {return height * width;}
 
 inline Screen &Screen::set(char c)
 {
