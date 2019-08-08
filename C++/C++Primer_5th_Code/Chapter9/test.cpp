@@ -6,6 +6,7 @@
 
 int main()
 {
+    /* 
     std::list<std::deque<int>> test;
     std::string s="abcd";
     for (auto &i : s)
@@ -18,5 +19,19 @@ int main()
     {
         std::cout<<i<<std::endl;
     }
+    */
+    std::vector<int> ivec;
+
+    std::cout<<"ivec:size: "<<ivec.size()
+                <<" capacity: "<<ivec.capacity()<<std::endl;
+
+    ivec.reserve(20);
+    std::cout<<"ivec:size: "<<ivec.size()
+                <<" capacity: "<<ivec.capacity()<<std::endl;
+
+
+    ivec.shrink_to_fit();
+    std::cout<<"ivec:size: "<<ivec.size()
+                <<" capacity: "<<ivec.capacity()<<std::endl;
     return 0;
 }
