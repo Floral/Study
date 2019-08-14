@@ -414,7 +414,7 @@ fitcsvm()和predict()
 
 从链接输出(linkage)中创建聚类
 
-#### zsore()
+#### zscore()
 
 对数据矩阵进行标准化处理。
 
@@ -424,9 +424,56 @@ fitcsvm()和predict()
 
 
 
+
+
 ### 主成分分析
 
 > 主成分分析法主要用于数据降维，减少变量的个数。
+
+
+
+#### 主成分回归分析
+
+##### corrcoef()
+
+`R = corrcoef(A)` returns the matrix of [correlation coefficients](corrcoef.html#bunkanr) for `A`, where the columns of `A` represent random variables and the rows represent observations.
+
+
+
+##### pcacov()
+
+输入相关系数矩阵，直接输出主成分分析的结果。
+
+
+
+### 因子分析
+
+> 也是降维。可看成主成分分析的推广，但是与主成分分析存在差异。
+>
+> 最主要的区别就是：
+>
+> - 主成分分析是用原变量的线性组合来构造新的综合变量——即主成分
+> - 而因子分析是找出潜在的假想变量和随机影响变量，并用他们的线性组合来表示原变量。
+
+
+
+#### 因子旋转
+
+rotatefactors()
+
+
+
+
+
+## 第十一章 偏最小二乘回归分析
+
+> 预测类题目的方法
+
+主要用于当一组自变量存在多重相关性（即，自变量之间是会相互影响的，存在线性关系，这样会影响参数估计的结果）、观测数据量较少（样本量较少）时的回归分析。
+
+
+
+
 
 ## 小技巧
 
