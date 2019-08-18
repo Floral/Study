@@ -1,3 +1,26 @@
+# The first week
+
+## classification of machine learning
+
+- supervised learning
+  - regression problem
+  - classification problem
+- unsupervised learning
+
+
+
+## regression problem
+
+### linear regression
+
+#### Algorithm——Gradient Descent
+
+- set a proper learning rate is important.
+
+
+
+
+
 # The third week
 
 ## The cost function of logistic function
