@@ -77,9 +77,51 @@ $\theta=(X^TX)^{-1}y$
 
 # The third week
 
-## The cost function of logistic function
+## Classification and Representation
 
- We can not use the cost function of linear regression!Because that cost function is not suitable for logistic function,the graph is an non-convex function and we cannot find the global optimism.
+### Binary classification problem
+
+The dependent variable y can only take on two values, 0 and 1.
+
+If we use the linear regression method which we have discussed above, the result may not fit very well(at a large probability).
+
+Then we find a new function which called Logistic Function(or Sigmoid Function) to solve this problem by plugging $\theta^Tx$ into this function:
+
+$h_\theta(x)=g(\theta^Tx)$
+
+$z=\theta^Tx$
+
+$h_\theta(z)=\frac{1}{1+e^{-z}}$
+
+And the image of this function looks like this:
+
+![img](https://d3c33hcgiwev3.cloudfront.net/imageAssetProxy.v1/1WFqZHntEead-BJkoDOYOw_2413fbec8ff9fa1f19aaf78265b8a33b_Logistic_function.png?expiry=1566432000000&hmac=U_NqmRQtdUeRXMiSEdvrpe4TT8t0iZBdTaibqbJR0wA)
+
+Note that the result of this function is giving us a probability that it is 1.
+
+
+
+### Decision Boundary
+
+The **decision boundary** is the line that separates the area where y = 0 and where y = 1. It is created by our hypothesis function.
+
+Commonly, we choose the linear x=0 to be the decision boundary of Logistic Function. If z is greater than or equals to zero, we choose the corresponding y to be 1.
+
+Note that the input to the Sigmoid function g(z) (e.g. $\theta^Tx$ ) doesn't need to be linear, and could be other non-linear function forms, and maybe it works better!
+
+
+
+## Logistic Regression Model
+
+### Cost function
+
+We cannot use the same cost function that we use for linear regression because the Logistic Function will cause the output to be wavy, causing many local optima. In other words, it will not be a convex function.
+
+Instead, our cost function for logistic regression looks like:
+
+
+
+
 
 
 
