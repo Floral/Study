@@ -2,6 +2,7 @@
 #include<string>
 
 class HasPtr{
+    friend void swap(HasPtr&, HasPtr&);
 public:
     HasPtr(const std::string &s = std::string()):
         ps(new std::string(s)),i(0){}
@@ -12,6 +13,11 @@ public:
     {
         (*ps)=(*rhs.ps);
         i = rhs.i;
+        return *this;
+    }
+    std::string* getContent()
+    {
+        return ps;
     }
 
 private:
@@ -19,10 +25,19 @@ private:
     int i;
 };
 
+inline void swap(HasPtr &lhs, HasPtr &rhs)
+{
+
+}
+
+using namespace std;
 int main()
 {
     
-    HasPtr hp;
+    HasPtr hp("test"),hp2("hhhh");
+    cout<< *(hp.getContent())  <<endl;
     
+    // hp2=hp;
+    cout<<*(hp2.getContent()) <<endl;
     return 0;
 }

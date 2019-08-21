@@ -130,3 +130,32 @@ Instead, our cost function for logistic regression looks like:
 ### Use the method called "One-vs-all"
 
 ​	This method means pick one of the classes from all, and construct a binary classifier to classify this class against the rest.Then pick another classifier to construct another classifier until each class has one classifier!(That mean you have to construct n classifiers to complete this multiclass classification problem,n is the number of classes you want to classify) 
+
+
+
+## Overfitting
+
+If we make the fitting function to be high order polynomial such as $5^{th}$ order polynomial $\sum_{j=0}^{5}\theta_jx^j$ , then we mostly get the result figure that fit the data in training set very well, and the cost may approximates zero. But if we give it some samples which is not in the training set, the figure will probably give us a unpleasing result.
+
+That is what we call "overfitting", and of course there are underfitting in contrary which denotes the fitting to training set is not well as we expect, or you can say "bad".
+
+The common reason for overfitting is :
+
+- too many features and so the degree of the equation is too high.
+
+
+
+### How to reduce the probability to be overfitting?
+
+There are two methods:
+
+1. reduce the number of features
+
+   - Manually select which features to keep.
+
+   - Use a model selection algorithm (studied later in the course).
+
+2. Regularization
+
+   - Keep all the features, but reduce the magnitude of parameters $\theta_j$.
+   - Regularization works well when we have a lot of slightly useful features.
