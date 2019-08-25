@@ -31,10 +31,13 @@ X = [ones(m, 1) X];
 %       
 
 
+all_value = X*all_theta';
+[~,p] = max(all_value,[],2);
 
-
-
-
+% t1=[1:10]';
+% t2=(all_value==max_value);
+% p=t2*t1;      % this method is not wrong, but submission hint says it is
+% wrong, maybe the cloud's matlab is a bit of different from mine.
 
 % =========================================================================
 
