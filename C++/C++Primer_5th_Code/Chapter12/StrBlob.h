@@ -23,6 +23,7 @@ public:
     bool empty() const {return data->empty();}
 
     void push_back(const std::string &t) {data->push_back(t);}
+    void push_back(std::string &&t) && {data->push_back(t);}
     void pop_back();
 
     std::string& front();

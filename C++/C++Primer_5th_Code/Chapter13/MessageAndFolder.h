@@ -21,10 +21,14 @@ private:
 	void addFolder(Folder* f){folders.insert(f);};
 	void remFolder(Folder* f){folders.erase(f);};
 
+	void move_Folders(Message *m);
+
 public:
     explicit Message(const std::string &str=""):contents(str){};
     Message(const Message&);
+	Message(Message&&);
     Message& operator=(const Message&);
+	Message& operator=(Message&&);
     ~Message();
 
 	void print_debug();

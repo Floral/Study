@@ -1,4 +1,6 @@
-# The first week
+[TOC]
+
+# Week 1
 
 ## classification of machine learning
 
@@ -22,7 +24,7 @@ the final optimal point maybe a local optimum as the start point varies. But in 
 
 
 
-# The second week
+# Week 2
 
 ## Gradient Descent with multiple features
 
@@ -75,7 +77,7 @@ $\theta=(X^TX)^{-1}y$
 
 
 
-# The third week
+# Week 3
 
 ## Classification and Representation
 
@@ -159,4 +161,14 @@ There are two methods:
 
    - Keep all the features, but reduce the magnitude of parameters $\theta_j$.
    - Regularization works well when we have a lot of slightly useful features.
+
+
+
+
+
+# Week 4
+
+## Neural Networks
+
+### Model Representation
 
