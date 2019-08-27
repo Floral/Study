@@ -172,3 +172,16 @@ There are two methods:
 
 ### Model Representation
 
+
+
+
+
+
+
+# Week 5
+
+## Cost Function and Back Propagation
+
+
+
+
