@@ -18,3 +18,18 @@
 | /sbin       | system binaries.                                             |
 | /var        | "var" is the abbreviation of variable or various, and it means the files in this directories are likely to change. |
 
+
+
+
+
+## 5-Working with Commands
+
+- type
+- which
+- help
+- man
+- apropos
+- info
+- whatis
+- alias
+

@@ -55,7 +55,7 @@ Theta2_grad = zeros(size(Theta2));
 %               first time.
 %
 % Part 3: Implement regularization with the cost function and gradients.
-%
+%(m, input_layer_size - 1
 %         Hint: You can implement this around the code for
 %               backpropagation. That is, you can compute the gradients for
 %               the regularization separately and then add them to Theta1_grad
@@ -63,22 +63,53 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
+% part 1:
+% cost function without regularization
+a1=[ones(m,1) X];    % add a(1)0
+z2=Theta1*a1';  % 25x5000
+a2=sigmoid(z2);    a2=[ones(1,m);a2];    % add a(2)0 26x5000
+z3=Theta2*a2;
+a3=sigmoid(z3);  % 10x5000
+h_theta=a3;
+[~,p] = max(a3,[],1);
+% h_theta = zeros(size(a3));
+% for i=1:size(a3,2)
+%     h_theta(p(i),i)=1;
+% end
+t=zeros(m,num_labels);  %5000x10
+for i=1:m
+   t(i,y(i))=1; 
+end
+
+J_of_each = zeros(1,m);
+for i=1:m
+    J_of_each(1,i) = (-t(i,:)*log(h_theta(:,i))-(1-t(i,:))*log(1-h_theta(:,i)));
+end
+J = sum(J_of_each)/m;
+
+% regularization
+regularization_term = (lambda/(2*m))*(sum(sum(Theta1(:,[2:end]).^2))+...
+                        sum(sum(Theta2(:,[2:end]).^2)));
+J = J + regularization_term;
 
 
+% part 2:
+t=t';
+Delta1 = zeros(size(Theta1));  % 25x401
+Delta2 = zeros(size(Theta2));  % 10x26
+for i=1:m
+    delta3 = h_theta(:,i) - t(:,i);     % 10x1
+    delta2 = Theta2'*delta3.*[1;sigmoidGradient(z2(:,i))];   % 26x1
+    Delta2 = Delta2+delta3*a2(:,i)';    % 10x26
+    Delta1 = Delta1+delta2(2:end)*a1(i,:);  %25x401
+end
 
+Theta1_grad = Delta1/m;
+Theta2_grad = Delta2/m;
 
-
-
-
-
-
-
-
-
-
-
-
-
+% regularization
+Theta1_grad = Theta1_grad+[zeros(hidden_layer_size,1) lambda/m*Theta1(:,2:end)];
+Theta2_grad = Theta2_grad+[zeros(num_labels,1) lambda/m*Theta2(:,2:end)];
 
 % -------------------------------------------------------------
 
