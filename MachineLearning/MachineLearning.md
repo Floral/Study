@@ -185,3 +185,30 @@ There are two methods:
 
 
 
+
+# Week 6
+
+## How to evaluate a hypothesis
+
+If we didn't get an ideal hypothesis for our training and test sets. We usually try some methods to improve the predictions from below:
+
+- Getting more training examples
+- Trying smaller sets of features
+- Trying additional features
+- Trying polynomial features
+- Increasing or decreasing λ
+
+Once we get our new hypothesis, we need to evaluate it. But what is the criterion?
+
+Commonly, we take the cost of testing set to evaluate which called test set error.
+
+
+
+### Model Selection and Train/Validation/Test Sets
+
+
+
+
+
+
+
