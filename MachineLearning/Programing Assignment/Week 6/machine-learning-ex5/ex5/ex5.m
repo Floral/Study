@@ -218,3 +218,9 @@ end
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
+
+[val,n] = min(error_val);
+fprintf('the best lambda is: %f\n',lambda_vec(n));
+theta=trainLinearReg(X_poly,y,lambda_vec(n));
+cost = linearRegCostFunction(X_poly_test,ytest,theta,0);
+fprintf('The test cost of this model is: %f\n',cost);
