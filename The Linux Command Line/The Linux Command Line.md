@@ -53,7 +53,7 @@ We can use the `&>` or `&>>` to do this.
 
 ### **/dev/null**
 
-/dev/null if a file that accepts input and does nothing with it, just like a black hole which eats up all of the input.
+/dev/null if a file that accepts input and does nothing with it, just like a black hole which eats up all of the inputs.
 
 This file are usually used to suppress the error and status messages.
 
@@ -67,7 +67,7 @@ Specially, if we don't add any arguments to cat, it accepts standard input and r
 
 ### standard input redirection
 
-`<` is redirection operator.
+`<` is input redirection operator.
 
 
 
@@ -107,3 +107,8 @@ example:`ls /usr/bin | tee ls.txt | grep zip`
 Execute this command and you will see a file named "ls.txt" is created in your current folder and it stores the result of `ls /usr/bin`.
 
 At the same time, the result will also be piped to `grep zip` command, then print some lines in your terminal.
+
+
+
+## 7- Seeing the World as the Shell Sees it
+
