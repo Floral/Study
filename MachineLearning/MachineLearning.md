@@ -41,7 +41,7 @@ There are two common method to implement the ideal status we look forward:
 
 And we often take these two method together to get better efficiency：
 
-$x_i=\frac{x_i-\mu_i}{s_i}$
+$ x_i=\frac{x_i-\mu_i}{s_i} $ 
 
 where  $\mu_i$ is the average of all values for feature (i) and $s_i$ is the range of values (max-min), or standard deviation.
 
@@ -72,8 +72,6 @@ $\theta=(X^TX)^{-1}y$
 
 
 > That let me recall the linear regression in probability, and there is a method which I think may come from the same mathematical method and get the same conclusion called **Least squares method**!
-
-
 
 
 

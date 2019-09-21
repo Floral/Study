@@ -1,3 +1,5 @@
+#ifndef PRACTICE15_11
+#define PRACTICE15_11
 #include<iostream>
 #include<string>
 
@@ -33,3 +35,5 @@ void Quote::debug() const
 {
     std::cout<<"bookNo: "<<bookNo<<" # price: "<<price<<std::endl;
 }
+
+#endif

@@ -63,5 +63,8 @@
         "thread": "cpp",
         "valarray": "cpp",
         "variant": "cpp"
-    }
+    },
+    "python.pythonPath": "/opt/anaconda/bin/python",
+    "editor.fontFamily": "'Fira Code'",
+    "editor.fontSize": 18
 }

@@ -1,3 +1,5 @@
+#ifndef PRACTICE15_5
+#define PRACTICE15_5
 #include<iostream>
 #include"practice15_3.h"
 
@@ -24,3 +26,5 @@ double Bulk_quote::net_price(std::size_t cnt) const
     else
         return cnt * price;
 }
+
+#endif
