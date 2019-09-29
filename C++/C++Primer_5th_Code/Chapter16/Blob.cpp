@@ -6,7 +6,7 @@ Blob<T>::Blob(): data(std::make_shared<std::vector<T>>()) {}
 template<typename T>
 Blob<T>::Blob(std::initializer_list<T> il):
         data(std::make_shared<std::vector<T>>(il)) {}
-        
+
 
 template<typename T>
 void Blob<T>::check(size_type i, const std::string &msg) const
@@ -36,3 +36,19 @@ void Blob<T>::pop_back()
     data->pop_back();
 }
 
+//=============== BlobPtr =================
+template<typename T>
+BlobPtr<T> BlobPtr<T>::operator++(int)
+{
+    BlobPtr ret = *this;
+    ++*this;
+    return ret;
+}
+
+template<typename T>
+BlobPtr<T> BlobPtr<T>::operator--(int)
+{
+    BlobPtr ret = *this;
+    --*this;
+    return ret;
+}

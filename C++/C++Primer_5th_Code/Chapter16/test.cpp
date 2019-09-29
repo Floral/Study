@@ -11,6 +11,7 @@ int compare(T a, T b)
     return 0;
 }
 
+
 int main()
 {
     std::cout<<compare(1,0)<<std::endl;
