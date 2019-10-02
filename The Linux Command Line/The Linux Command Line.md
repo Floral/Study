@@ -112,3 +112,25 @@ At the same time, the result will also be piped to `grep zip` command, then prin
 
 ## 7- Seeing the World as the Shell Sees it
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 12 - A Gentle Introduction to vi
+
+| command             | function                                                     |
+| ------------------- | ------------------------------------------------------------ |
+| J                   | join the next line into the current line's end               |
+| /string             | search the string you input in the whole file                |
+| vsplit \<filename\> | split the screen with two files, press Ctrl + w + w to switch between the files. |
+

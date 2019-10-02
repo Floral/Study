@@ -21,9 +21,11 @@ sigma2 = zeros(n, 1);
 %               should contain variance of the i-th feature.
 %
 
+mu=mean(X)';
 
+t=repmat(mu,1,m);
 
-
+sigma2 = mean((X'-mu).^2,2);
 
 
 
