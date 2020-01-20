@@ -88,7 +88,7 @@ module id(
                     wd_o <= inst_i[20:16];
 
                     //ori指令是有效指令
-                    instvalid   <=  `InstValid;
+                    instvalid   <=  `Instvalid;
                 end 
                 default: begin
                     

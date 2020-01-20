@@ -27,7 +27,7 @@ module openmips_min_sopc(
 	inst_rom inst_rom0(
 		.ce(rom_ce),
 		.addr(inst_addr),
-		.inst(inst)
+		.inst(inst),
 	);
 
 
