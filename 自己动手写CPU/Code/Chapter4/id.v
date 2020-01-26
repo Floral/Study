@@ -46,6 +46,7 @@ module id(
             aluop_o     <=  `EXE_NOP_OP;
             alusel_o    <=  `EXE_RES_NOP;
             wd_o        <=  `NOPRegAddr;
+            wreg_o      <=  `WriteDisable;
             instvalid   <=  `InstValid;
             reg1_read_o <=  1'b0;
             reg2_read_o <=  1'b0;
