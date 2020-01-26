@@ -13,6 +13,16 @@ module id(
     input  wire[`RegBus]        reg1_data_i,
     input  wire[`RegBus]        reg2_data_i,
 
+    //处于执行阶段的指令的运算结果
+    input  wire                 ex_wreg_i,      //处于执行阶段的指令是否要写入目的寄存器
+    input  wire [`RegBus]       ex_wdata_i,     //写入的寄存器的数据
+    input  wire [`RegAddrBus]   ex_wd_i,        //写入的寄存器的地址
+
+    //处于访存阶段的指令的运算结果
+    input  wire                 mem_wreg_i,
+    input  wire [`RegBus]       mem_wdata_i,
+    input  wire [`RegAddrBus]   mem_wd_i,
+
     //输出给Regfile的信息（为了读取Regfile里的数据
     output reg              reg1_read_o,    //接读端口1的使能信号
     output reg              reg2_read_o,    //接读端口2的使能信号
@@ -22,10 +32,11 @@ module id(
     //送到执行阶段的信息
     output reg[`AluOpBus]   aluop_o,    //指令要进行的运算的子类型
     output reg[`AluSelBus]  alusel_o,   //指令要进行的运算的类型
-    output reg[`RegBus]     reg1_o,     //从寄存器取得的源操作数1
+    output reg[`RegBus]     reg1_o,     //送到执行阶段的源操作数1
     output reg[`RegBus]     reg2_o,     //源操作数2
     output reg[`RegAddrBus] wd_o,       //指令要写入的目的寄存器的地址
     output reg              wreg_o      //是否有要写入的目的寄存器
+
 );
     //取得指令的指令码，功能码
     //ori指令只需判断26-31bit的值，就能判断该指令是否是ori指令
@@ -99,9 +110,20 @@ module id(
 
 
     /**************第二部分：确定运算的源操作数1***************/
+    /*
+    给reg1/2_o赋值的过程增加了两中情况:
+    1.如果Regfile模块读端口1/2要取的寄存器就是执行阶段要写的寄存器，那么直接吧执行阶段的结果ex_wdata_i作为reg1/2_o的值
+    2.如果Regfile模块读端口1/2要取的寄存器就是访存阶段要写的寄存器，那么直接把访存阶段的结果mem_wdata_i作为reg1/2_o的值
+    */
     always @(*) begin
         if (rst == `RstEnable) begin
             reg1_o <= `ZeroWord;
+        end else if ((reg1_read_o == 1'b1) && (ex_wreg_i == 1'b1)
+                    && (ex_wd_i == reg1_addr_o )) begin
+            reg1_o <= ex_wdata_i;
+        end else if ((reg1_read_o == 1'b1) && (mem_wreg_i == 1'b1)
+                    && (mem_wd_i == reg1_addr_o )) begin
+            reg1_o <= mem_wdata_i;
         end else if (reg1_read_o == 1'b1) begin
             reg1_o <= reg1_data_i;      //Regfile读端口1 的输出
         end else if (reg1_read_o == 1'b0) begin
@@ -115,6 +137,12 @@ module id(
     always @(*) begin
         if (rst == `RstEnable) begin
             reg2_o <= `ZeroWord;
+        end else if ((reg2_read_o == 1'b1) && (ex_wreg_i == 1'b1)
+                    && (ex_wd_i == reg2_addr_o )) begin
+            reg2_o <= ex_wdata_i;
+        end else if ((reg2_read_o == 1'b1) && (mem_wreg_i == 1'b1)
+                    && (mem_wd_i == reg2_addr_o )) begin
+            reg2_o <= mem_wdata_i;
         end else if (reg2_read_o == 1'b1) begin
             reg2_o <= reg2_data_i;      //Regfile读端口2 的输出
         end else if (reg2_read_o == 1'b0) begin
@@ -123,6 +151,7 @@ module id(
             reg2_o <= `ZeroWord;
         end
     end
-    
 
+
+    
 endmodule // id
