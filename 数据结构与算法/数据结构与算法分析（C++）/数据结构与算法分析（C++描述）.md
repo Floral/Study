@@ -92,3 +92,8 @@ MyType func(const vector<MyType> &arr){
 我们通常说的**表ADT（List Abstract Data Type）**在C++中有两种实现，一种是vector，另一种是list。
 
 vector提供的是表ADT得到一中可增长的数组实现，list是表ADT的双向链表实现。
+
+
+
+### list的实现
+
