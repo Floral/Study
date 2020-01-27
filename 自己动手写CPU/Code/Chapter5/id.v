@@ -5,9 +5,19 @@ module id(
     input  wire[`InstAddrBus]   pc_i,     //所要译码的指令对应的地址
     input  wire[`InstBus]       inst_i,
 
-    //读取的Regfile的值
+	//读取的Regfile的值
     input  wire[`RegBus]        reg1_data_i,
     input  wire[`RegBus]        reg2_data_i,
+
+	//处于执行阶段的指令要写入的目的寄存器信息
+	input wire					ex_wreg_i,
+	input wire[`RegBus]			ex_wdata_i,
+	input wire[`RegAddrBus]     ex_wd_i,
+	
+	//处于访存阶段的指令要写入的目的寄存器信息
+	input wire					mem_wreg_i,
+	input wire[`RegBus]			mem_wdata_i,
+	input wire[`RegAddrBus]     mem_wd_i,
 
     //输出给Regfile的信息（为了读取Regfile里的数据
     output reg              reg1_read_o,    //接读端口1的使能信号

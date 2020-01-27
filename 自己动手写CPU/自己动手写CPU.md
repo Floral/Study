@@ -23,10 +23,18 @@ https://blog.csdn.net/qq_42914528/article/details/81779727
 
 
 
+## 第四章
+
+首先要做的就是搭建一个流水线结构。所谓流水线，在电路上的结构就是组合逻辑和时序逻辑电路
+
+
+
 ## 第五章
 
-本书OpenMIPS采用数据超前的方法解决RAW（Read After Write）的问题
+本书OpenMIPS采用数据前推的方法解决RAW（Read After Write）的问题。
 
 译码阶段输出的Aluop和Alusel是为了方便执行阶段执行操作的判断。
 
 无论是寄存器位移版本（sllv、srav、srlv）还是立即数位移版本（sll、sra、srl），最终都是通过reg1_o和reg2_o输出两个操作数给id_ex.v至ex.v。
+
+对任意一条而言，译码工作的主要内容是：确定要读取的寄存器的情况、要执行的运算和要写入的目的寄存器三方面的信息。
