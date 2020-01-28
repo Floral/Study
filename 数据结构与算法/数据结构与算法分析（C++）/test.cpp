@@ -5,7 +5,7 @@ using namespace std;
 class A
 {
 public:
-     void func()
+    virtual void func()
     {
         cout<<"I'm A!";
     }
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
     A a;
     B b;
     A& p = b;
-    p.func();    
+    a.func();    
 
     return 0;
 }
