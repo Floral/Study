@@ -37,7 +37,7 @@ module ex(
     //处于执行阶段的指令对HI、LO寄存器的写请求操作
     output reg [`RegBus]        hi_o,
     output reg [`RegBus]        lo_o,
-    output reg                  whilo_o     //是否要写的标志
+    output reg                  whilo_i     //是否要写的标志
 );
     //保存逻辑运算的结果
     reg[`RegBus]    logicout;
@@ -65,21 +65,20 @@ module ex(
             moveres <=  `ZeroWord;
         end else begin
             moveres <=  `ZeroWord;
-            case (aluop_i)
+            case (aulop_i)
                 `EXE_MFHI_OP: begin //如果是mfhi指令，那么将HI的值作为移动操作的结果，下面的指令类比
                     moveres <=  HI;
                 end 
-                `EXE_MFLO_OP: begin
+                `EXE_MFLO_OP:		begin
 	   		        moveres <= LO;
 	   	        end
-	   	        `EXE_MOVZ_OP: begin
+	   	        `EXE_MOVZ_OP:		begin
 	   	        	moveres <= reg1_i;
 	   	        end
-	   	        `EXE_MOVN_OP: begin
+	   	        `EXE_MOVN_OP:		begin
 	   	        	moveres <= reg1_i;
 	   	        end
-                default: begin
-                end
+                default: 
             endcase
         end
     end
@@ -154,17 +153,17 @@ module ex(
     /*****************第四段:如果是MTHI、MTLO指令，那么需要给出whilo_o,hi_o,lo_i的值**************/
     always @(*) begin
         if (rst==`RstEnable) begin
-            whilo_o <=  `WriteDisable;
+            whilo_i <=  `WriteDisable;
         end else if(aluop_i == `EXE_MTHI_OP) begin
-            whilo_o <=  `WriteEnable;
+            whilo_i <=  `WriteEnable;
             hi_o    <=  reg1_i;
             lo_o    <=  LO;     //写HI寄存器，所以LO不变
         end else if(aluop_i == `EXE_MTLO_OP) begin
-            whilo_o <=  `WriteEnable;
+            whilo_i <=  `WriteEnable;
             hi_o    <=  HI;
-            lo_o    <=  reg1_i;
+            hi_o    <=  reg1_i;
         end else begin
-            whilo_o <=  `WriteDisable;
+            whilo_i <=  `WriteDisable;
             hi_o    <=  `ZeroWord;
             lo_o    <=  `ZeroWord;
         end

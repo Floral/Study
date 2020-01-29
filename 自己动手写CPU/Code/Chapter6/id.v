@@ -53,10 +53,10 @@ module id(
 			reg1_addr_o <= `NOPRegAddr;
 			reg2_addr_o <= `NOPRegAddr;
 			imm <= 32'h0;			
-	    end else begin
+	    end else begin		//这一部分都是默认赋值
 			aluop_o <= `EXE_NOP_OP;
 			alusel_o <= `EXE_RES_NOP;
-			wd_o <= inst_i[15:11];
+			wd_o <= inst_i[15:11];		//默认目的寄存器地址wd_o
 			wreg_o <= `WriteDisable;
 			instvalid <= `InstInvalid;	   
 			reg1_read_o <= 1'b0;
@@ -132,8 +132,64 @@ module id(
                                     reg1_read_o <= 1'b0;
                                     reg2_read_o <= 1'b1;
 		  						    instvalid <= `InstValid;	
-								end								  									
-						        default:begin
+								end
+								`EXE_MFHI: begin
+									wreg_o		<=	`WriteEnable;
+									aluop_o		<=	`EXE_MFHI_OP;
+									alusel_o	<=	`EXE_RES_MOVE;
+									reg1_read_o	<=	1'b0;
+									reg2_read_o	<=	1'b0;
+									instvalid	<=	`InstValid;
+								end
+								`EXE_MFLO: begin
+									wreg_o		<=	`WriteEnable;
+									aluop_o		<=	`EXE_MFLO_OP;
+									alusel_o	<=	`EXE_RES_MOVE;
+									reg1_read_o	<=	1'b0;
+									reg2_read_o	<=	1'b0;
+									instvalid	<=	`InstValid;
+								end									  									
+								`EXE_MTHI: begin
+									wreg_o		<=	`WriteDisable;	//mthi/mtlo指令并不是要写入普通寄存器，所以这里为disable
+									aluop_o		<=	`EXE_MTHI_OP;
+									reg1_read_o	<=	1'b1;			//mthi/mtlo指令需要读取一个寄存器的值写入HI或LO
+									reg2_read_o	<=	1'b0;
+									instvalid	<=	`InstValid;
+								end		
+								`EXE_MTLO: begin
+									wreg_o		<=	`WriteDisable;
+									aluop_o		<=	`EXE_MTLO_OP;
+									reg1_read_o	<=	1'b1;
+									reg2_read_o	<=	1'b0;
+									instvalid	<=	`InstValid;
+								end									  									
+								`EXE_MOVN: begin
+									aluop_o		<=	`EXE_MOVN_OP;
+									alusel_o	<=	`EXE_RES_MOVE;
+									reg1_read_o	<=	1'b1;
+									reg2_read_o	<=	1'b1;
+									instvalid	<=	`InstValid;
+									//reg2_o的值就是地址为rt的通用寄存器的值
+									if (reg2_o!=`ZeroWord) begin
+										wreg_o	<=	`WriteEnable;
+									end else begin
+										wreg_o	<=	`WriteDisable;
+									end
+								end	
+								`EXE_MOVZ: begin
+									aluop_o		<=	`EXE_MOVZ_OP;
+									alusel_o	<=	`EXE_RES_MOVE;
+									reg1_read_o	<=	1'b1;
+									reg2_read_o	<=	1'b1;
+									instvalid	<=	`InstValid;
+									//reg2_o的值就是地址为rt的通用寄存器的值
+									if (reg2_o==`ZeroWord) begin
+										wreg_o	<=	`WriteEnable;
+									end else begin
+										wreg_o	<=	`WriteDisable;
+									end
+								end
+						        default: begin
 						        end
 						    endcase   //case(op3)
 						end
@@ -224,11 +280,11 @@ module id(
 				end
 			end //endif		  
 		  
-		end       //if
+		end       //else
 	end         //always
 	
 
-	always @ (*) begin
+	always @ (*) begin			//MUX
 		if(rst == `RstEnable) begin
 			reg1_o <= `ZeroWord;		
 		end else if((reg1_read_o == 1'b1) && (ex_wreg_i == 1'b1) 
@@ -246,7 +302,7 @@ module id(
 	    end
 	end
 	
-	always @ (*) begin
+	always @ (*) begin			//MUX
 		if(rst == `RstEnable) begin
 			reg2_o <= `ZeroWord;
 		end else if((reg2_read_o == 1'b1) && (ex_wreg_i == 1'b1) 
