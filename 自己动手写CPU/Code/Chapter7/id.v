@@ -258,7 +258,7 @@ module id(
 						default: begin
 						end
 					endcase	    //case(op2)
-					end			
+				end			
 				//以下是I型的指令
 		  	    `EXE_ORI:begin                        //ORI指令
 		  		    wreg_o <= `WriteEnable;
@@ -378,6 +378,7 @@ module id(
 						default: begin
 						end
 					endcase	//special2 的 case(op3)
+				end
 		        default:begin
 		        end
 		    endcase		  //case op
