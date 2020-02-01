@@ -245,7 +245,7 @@ module ex(
         wd_o    <=  wd_i;
         //是add、addi、sub、subi指令，且发生溢出，那么wreg_o就设置为WriteDisable
         if (((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDI_OP) ||
-            (aluop_i == `EXE_SUB_OP)) && (ov_sum == 1'b1)) begin    //这里曾经有一个 括号位置引发的惨剧。。。
+            (aluop_i == `EXE_SUB_OP)) && (ov_sum == 1'b1)) begin    //这里曾经有一个 括号位置引发的惨剧。。。注意&&的优先级比||高
             wreg_o  <=  `WriteDisable;
         end else begin
             wreg_o  <=  wreg_i;
