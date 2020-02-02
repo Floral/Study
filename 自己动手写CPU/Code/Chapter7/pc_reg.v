@@ -5,8 +5,9 @@
 `include "defines.v"
 
 module pc_reg(
-    input wire  clk,    //时钟信号
-    input wire  rst,    //复位信号
+    input  wire  clk,    //时钟信号
+    input  wire  rst,    //复位信号
+    input  wire[5:0]    stall,      //来自控制模块CTRL
     output reg[`InstAddrBus] pc,
     output reg  ce
 );
@@ -22,7 +23,7 @@ module pc_reg(
     always @(posedge clk) begin
         if (ce == `ChipDisable) begin
             pc <= 32'h00000000;      //指令寄存器禁用的时候，PC=0
-        end else begin
+        end else if(stall[0] == `NoStop) begin
             pc <= pc + 4'h4;         //指令寄存器使能的时候，PC的值每时钟周期加4（因为地址是按字节编址，而数据线是32位）
         end
     end

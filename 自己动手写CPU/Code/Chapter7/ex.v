@@ -37,7 +37,9 @@ module ex(
     //处于执行阶段的指令对HI、LO寄存器的写请求操作
     output reg [`RegBus]        hi_o,
     output reg [`RegBus]        lo_o,
-    output reg                  whilo_o     //是否要写的标志
+    output reg                  whilo_o,     //是否要写的标志
+
+    output reg                  stallreq
 );
     //保存逻辑运算的结果
     reg[`RegBus]    logicout;

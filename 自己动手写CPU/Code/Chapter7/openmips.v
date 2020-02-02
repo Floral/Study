@@ -78,9 +78,20 @@ module openmips(
 	wire[`RegBus] 	hi;
 	wire[`RegBus]   lo;
 
+	//连接执行阶段与ex_reg模块，用于多周期的MADD、MADDU、MSUB、MSUBU指令
+	wire[`DoubleRegBus] hilo_temp_o;
+	wire[1:0] 			cnt_o;
+	
+	wire[`DoubleRegBus] hilo_temp_i;
+	wire[1:0] 			cnt_i;
+
+	wire[5:0] 			stall;
+	wire 				stallreq_from_id;	
+	wire 				stallreq_from_ex;
+
     //pc_reg实例化
     pc_reg pc_reg0(
-        .clk(clk),  .rst(rst),  .pc(pc),    .ce(rom_ce_o)
+        .clk(clk),  .rst(rst),  .stall(stall), 	.pc(pc),    .ce(rom_ce_o)
     );
 
     assign rom_addr_o = pc; //指令存储器的输入地址就是pc值
@@ -88,7 +99,9 @@ module openmips(
     //IF/ID模块实例化
     if_id if_id0(
         .clk(clk),  .rst(rst),  .if_pc(pc),
-        .if_inst(rom_data_i),   .id_pc(id_pc_i),
+        .if_inst(rom_data_i),   
+		.stall(stall),
+		.id_pc(id_pc_i),
         .id_inst(id_inst_i)
     );
 
@@ -125,7 +138,9 @@ module openmips(
 		.reg1_o(id_reg1_o),
 		.reg2_o(id_reg2_o),
 		.wd_o(id_wd_o),
-		.wreg_o(id_wreg_o)
+		.wreg_o(id_wreg_o),
+
+		.stallreq(stallreq_from_id)
 	);
 
     //ͨ通用寄存器Regfile模块实例化
@@ -155,6 +170,8 @@ module openmips(
 		.id_reg2(id_reg2_o),
 		.id_wd(id_wd_o),
 		.id_wreg(id_wreg_o),
+
+		.stall(stall),
 	
 		//传递到执行阶段你EX模块的信息
 		.ex_aluop(ex_aluop_i),
@@ -195,7 +212,9 @@ module openmips(
 
 		.hi_o(ex_hi_o),
 		.lo_o(ex_lo_o),
-		.whilo_o(ex_whilo_o)
+		.whilo_o(ex_whilo_o),
+
+		.stallreq(stallreq_from_ex)
 	);
 
   //EX/MEM模块实例化
@@ -211,6 +230,8 @@ module openmips(
 		.ex_hi(ex_hi_o),
 		.ex_lo(ex_lo_o),
 		.ex_whilo(ex_whilo_o),
+
+		.stall(stall),
 	
 		//传递给MEM模块的信息
 		.mem_wd(mem_wd_i),
@@ -256,6 +277,8 @@ module openmips(
 		.mem_lo(mem_lo_o),
 		.mem_whilo(mem_whilo_o),
 	
+		.stall(stall),
+
 		//送到回写阶段的信息
 		.wb_wd(wb_wd_i),
 		.wb_wreg(wb_wreg_i),
@@ -277,6 +300,17 @@ module openmips(
 		//读端口1
 		.hi_o(hi),
 		.lo_o(lo)	
+	);
+
+	ctrl ctrl0(
+		.rst(rst),
+	
+		//来自译码阶段的暂停请求
+		.stallreq_from_id(stallreq_from_id),
+ 	 	//来自执行阶段的暂停请求
+		.stallreq_from_ex(stallreq_from_ex),
+
+		.stall(stall)       	
 	);
 
 endmodule // openmips

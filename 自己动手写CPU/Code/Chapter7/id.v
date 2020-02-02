@@ -31,16 +31,20 @@ module id(
     output reg[`RegBus]     reg1_o,     //从寄存器取得的源操作数1
     output reg[`RegBus]     reg2_o,     //源操作数2
     output reg[`RegAddrBus] wd_o,       //指令要写入的目的寄存器的地址
-    output reg              wreg_o      //是否有要写入的目的寄存器
+    output reg              wreg_o,     //是否有要写入的目的寄存器
+
+	output wire 			stallreq
 );
 
-  wire[5:0] op = inst_i[31:26];
-  wire[4:0] op2 = inst_i[10:6];
-  wire[5:0] op3 = inst_i[5:0];
-  wire[4:0] op4 = inst_i[20:16];
-  reg[`RegBus]	imm;
-  reg instvalid;
+  	wire[5:0] op = inst_i[31:26];
+  	wire[4:0] op2 = inst_i[10:6];
+  	wire[5:0] op3 = inst_i[5:0];
+  	wire[4:0] op4 = inst_i[20:16];
+  	reg[`RegBus]	imm;
+  	reg instvalid;
   
+	assign stallreq = `NoStop;		//id阶段暂时都不用发出暂停请求，实现加载、存储指令的时候会用到
+
 	always @ (*) begin	
 		if (rst == `RstEnable) begin
 			aluop_o <= `EXE_NOP_OP;
