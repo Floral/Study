@@ -379,6 +379,38 @@ module id(
 							reg2_read_o <= 1'b1;	
 		  					instvalid <= `InstValid;	  			
 						end
+						`EXE_MADD:	begin
+							wreg_o		<=	`WriteDisable;	//以下四个指令都不写通用寄存器
+							aluop_o		<=	`EXE_MADD_OP;
+							alusel_o	<=	`EXE_RES_MUL;
+							reg1_read_o	<=	1'b1;
+							reg2_read_o	<=	1'b1;
+							instvalid	<=	`InstValid;
+						end
+						`EXE_MADDU: begin
+							wreg_o 		<= `WriteDisable;
+							aluop_o 	<= `EXE_MADDU_OP;
+		  					alusel_o	<= `EXE_RES_MUL; 
+							reg1_read_o <= 1'b1;
+							reg2_read_o <= 1'b1;	  			
+		  					instvalid 	<= `InstValid;	
+						end
+						`EXE_MSUB: begin
+							wreg_o		<= `WriteDisable;
+							aluop_o		<= `EXE_MSUB_OP;
+		  					alusel_o	<= `EXE_RES_MUL; 
+							reg1_read_o	<= 1'b1;
+							reg2_read_o <= 1'b1;	  			
+		  					instvalid 	<= `InstValid;	
+						end
+						`EXE_MSUBU:		begin
+							wreg_o 		<= `WriteDisable;
+							aluop_o 	<= `EXE_MSUBU_OP;
+		  					alusel_o 	<= `EXE_RES_MUL;
+							reg1_read_o <= 1'b1;
+							reg2_read_o <= 1'b1;	  			
+		  					instvalid 	<= `InstValid;	
+						end	
 						default: begin
 						end
 					endcase	//special2 的 case(op3)

@@ -204,6 +204,9 @@ module openmips(
 	  	.mem_hi_i(mem_hi_o),
 	  	.mem_lo_i(mem_lo_o),
 	  	.mem_whilo_i(mem_whilo_o),
+
+		.hilo_temp_i(hilo_temp_i),
+		.cnt_i(cnt_i),
 	  
 	  	//输出到EX/MEM模块的信息
 		.wd_o(ex_wd_o),
@@ -213,6 +216,9 @@ module openmips(
 		.hi_o(ex_hi_o),
 		.lo_o(ex_lo_o),
 		.whilo_o(ex_whilo_o),
+
+		.hilo_temp_o(hilo_temp_o),
+		.cnt_o(cnt_o),
 
 		.stallreq(stallreq_from_ex)
 	);
@@ -230,6 +236,8 @@ module openmips(
 		.ex_hi(ex_hi_o),
 		.ex_lo(ex_lo_o),
 		.ex_whilo(ex_whilo_o),
+		.hilo_i(hilo_temp_o),
+		.cnt_i(cnt_o),
 
 		.stall(stall),
 	
@@ -240,7 +248,9 @@ module openmips(
 
 		.mem_hi(mem_hi_i),
 		.mem_lo(mem_lo_i),
-		.mem_whilo(mem_whilo_i)
+		.mem_whilo(mem_whilo_i),
+		.hilo_o(hilo_temp_i),
+		.cnt_o(cnt_i)
 	);
 	
   //MEM模块实例化

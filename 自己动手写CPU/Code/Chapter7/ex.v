@@ -29,6 +29,9 @@ module ex(
     input  wire [`RegBus]       mem_lo_i,
     input  wire                 mem_whilo_i,
 
+    input  wire [`DoubleRegBus] hilo_temp_i,    //第一个执行周期得到的乘法结果
+    input  wire [1:0]           cnt_i,          //当前处于执行阶段的第几个时钟周期
+
     //执行结果
     output reg [`RegAddrBus]    wd_o,
     output reg                  wreg_o,
@@ -37,7 +40,9 @@ module ex(
     //处于执行阶段的指令对HI、LO寄存器的写请求操作
     output reg [`RegBus]        hi_o,
     output reg [`RegBus]        lo_o,
-    output reg                  whilo_o,     //是否要写的标志
+    output reg                  whilo_o,        //是否要写的标志
+    output reg [`DoubleRegBus]  hilo_temp_o,    //第一个执行周期得到的乘法结果
+    output reg [1:0]            cnt_o,          //下一个时钟周期处于执行阶段的第几个时钟周期
 
     output reg                  stallreq
 );
@@ -50,6 +55,7 @@ module ex(
 
     //新定义了一些变量
     reg [`RegBus]           arithmeticres;  //保存算术运算的结果
+    reg [`DoubleRegBus]     mulres;     //保存乘法结果，宽度位64位
     wire                    ov_sum; //保存溢出情况
     wire                    reg1_eq_reg2;   //第一个操作数是否等于第二个操作数
     wire                    reg1_lt_reg2;   //第一个操作数是否小于第二个操作数
@@ -59,7 +65,8 @@ module ex(
     wire [`RegBus]          opdata1_mult;   //乘法操作中的被乘数
     wire [`RegBus]          opdata2_mult;   //乘法操作中的乘数
     wire [`DoubleRegBus]    hilo_temp;  //临时保存乘法结果，宽度为64位
-    reg [`DoubleRegBus]     mulres;     //保存惩罚结果，宽度位64位
+    reg [`DoubleRegBus]     hilo_temp1;
+    reg                     stallreq_for_madd_msub;
 
 
     assign reg2_i_mux = ((aluop_i == `EXE_SUB_OP) ||
@@ -217,10 +224,16 @@ module ex(
 
     /*******************************乘法运算*****************************/
     //先把两个操作数都转成正数，之后再根据具体的指令判断是否有符号
-    assign opdata1_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i==`EXE_MULT_OP))
+    assign opdata1_mult = (((aluop_i == `EXE_MUL_OP)    ||
+                            (aluop_i == `EXE_MULT_OP)   ||
+                            (aluop_i == `EXE_MADD_OP)   ||
+                            (aluop_i == `EXE_MSUB_OP))
                             &&(reg1_i[31] == 1'b1)) ? (~reg1_i+1):reg1_i;
 
-    assign opdata2_mult = (((aluop_i == `EXE_MUL_OP) || (aluop_i==`EXE_MULT_OP))
+    assign opdata2_mult = (((aluop_i == `EXE_MUL_OP)    || 
+                            (aluop_i==`EXE_MULT_OP)     ||
+                            (aluop_i == `EXE_MADD_OP)   ||
+                            (aluop_i == `EXE_MSUB_OP))
                             &&(reg2_i[31] == 1'b1)) ? (~reg2_i+1):reg2_i;
 
     assign hilo_temp = opdata1_mult*opdata2_mult;   //得到临时的乘法结果
@@ -230,7 +243,10 @@ module ex(
     always @(*) begin
         if(rst == `RstEnable) begin
             mulres  <=  {`ZeroWord, `ZeroWord};
-        end else if((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MUL_OP)) begin
+        end else if((aluop_i == `EXE_MULT_OP)   ||
+                    (aluop_i == `EXE_MUL_OP)    ||
+                    (aluop_i == `EXE_MADD_OP)   ||
+                    (aluop_i == `EXE_MSUB_OP)) begin
             if (reg1_i[31]^reg2_i[31] == 1'b1) begin
                 mulres  <=  ~hilo_temp + 1;
             end else begin
@@ -239,7 +255,54 @@ module ex(
         end else begin
             mulres  <=  hilo_temp;
         end
-            
+    end
+
+    //MADD、MADDU、MSUB、MSUBU指令
+    always @(*) begin
+        if (rst == `RstEnable) begin
+            hilo_temp_o     <=  {`ZeroWord, `ZeroWord};
+            cnt_o           <=  2'b00;
+            stallreq_for_madd_msub  <=  `NoStop;
+        end else begin
+            case(aluop_i)
+                `EXE_MADD_OP, `EXE_MADDU_OP: begin  
+                    if (cnt_i == 2'b00) begin   //执行阶段第一个时钟周期
+                        hilo_temp_o <=  mulres;
+                        cnt_o       <=  2'b01;
+                        hilo_temp1  <=  {`ZeroWord, `ZeroWord};
+                        stallreq_for_madd_msub  <=  `Stop;
+                    end else if (cnt_i == 2'b01) begin  //执行阶段第二个时钟周期
+                        hilo_temp_o <=  {`ZeroWord, `ZeroWord};
+                        cnt_o       <=  2'b10;
+                        hilo_temp1  <=  hilo_temp_i + {HI, LO};
+                        stallreq_for_madd_msub  <=  `NoStop;
+                    end
+                end
+                `EXE_MSUB_OP, `EXE_MSUBU_OP: begin
+					if(cnt_i == 2'b00) begin
+						hilo_temp_o <=  ~mulres + 1 ;       //因为乘法结果是减数，所以要取补码
+						cnt_o <= 2'b01;
+						stallreq_for_madd_msub <= `Stop;
+					end else if(cnt_i == 2'b01)begin
+						hilo_temp_o <= {`ZeroWord,`ZeroWord};						
+						cnt_o <= 2'b10;
+						hilo_temp1 <= hilo_temp_i + {HI,LO};
+						stallreq_for_madd_msub <= `NoStop;
+					end	
+				end
+                default : begin
+                    hilo_temp_o <= {`ZeroWord,`ZeroWord};
+					cnt_o <= 2'b00;
+					stallreq_for_madd_msub <= `NoStop;
+                end
+            endcase
+        end
+    end
+
+    /**********************暂停流水线**********************/
+    //目前只有madd,maddu,msub,msubu指令会导致流水线暂停
+    always @(*) begin
+        stallreq = stallreq_for_madd_msub;
     end
 
     //*****************第三段:依据alusel_i指示的运算类型，选择一个运算结果作为最终结果 *************/
@@ -281,6 +344,16 @@ module ex(
             whilo_o <=  `WriteDisable;
             hi_o    <=  `ZeroWord;
             lo_o    <=  `ZeroWord;
+        end else if((aluop_i == `EXE_MSUB_OP)   ||
+                    (aluop_i == `EXE_MSUBU_OP)) begin
+            whilo_o <=  `WriteEnable;
+            hi_o    <=  hilo_temp1[63:32];
+            lo_o    <=  hilo_temp1[31:0];
+        end else if((aluop_i == `EXE_MADD_OP)   ||
+                    (aluop_i == `EXE_MADDU_OP)) begin
+            whilo_o <=  `WriteEnable;
+            hi_o    <=  hilo_temp1[63:32];
+            lo_o    <=  hilo_temp1[31:0];
         end else if((aluop_i == `EXE_MULT_OP) ||        //在这里曾经有着 一个全角空格引发的惨剧。。。。
                     (aluop_i == `EXE_MULTU_OP)) begin
             whilo_o <=  `WriteEnable;
