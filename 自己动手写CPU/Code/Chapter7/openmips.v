@@ -85,6 +85,14 @@ module openmips(
 	wire[`DoubleRegBus] hilo_temp_i;
 	wire[1:0] 			cnt_i;
 
+	wire[`DoubleRegBus] div_result;
+	wire 				div_ready;
+	wire[`RegBus] 		div_opdata1;
+	wire[`RegBus] 		div_opdata2;
+	wire 				div_start;
+	wire 				div_annul;
+	wire 				signed_div;
+
 	wire[5:0] 			stall;
 	wire 				stallreq_from_id;	
 	wire 				stallreq_from_ex;
@@ -207,6 +215,9 @@ module openmips(
 
 		.hilo_temp_i(hilo_temp_i),
 		.cnt_i(cnt_i),
+
+		.div_result_i(div_result),
+		.div_ready_i(div_ready), 
 	  
 	  	//输出到EX/MEM模块的信息
 		.wd_o(ex_wd_o),
@@ -219,6 +230,11 @@ module openmips(
 
 		.hilo_temp_o(hilo_temp_o),
 		.cnt_o(cnt_o),
+
+		.div_opdata1_o(div_opdata1),
+		.div_opdata2_o(div_opdata2),
+		.div_start_o(div_start),
+		.signed_div_o(signed_div),
 
 		.stallreq(stallreq_from_ex)
 	);
@@ -321,6 +337,20 @@ module openmips(
 		.stallreq_from_ex(stallreq_from_ex),
 
 		.stall(stall)       	
+	);
+
+	div div0(
+		.clk(clk),
+		.rst(rst),
+	
+		.signed_div_i(signed_div),
+		.opdata1_i(div_opdata1),
+		.opdata2_i(div_opdata2),
+		.start_i(div_start),
+		.annul_i(1'b0),
+	
+		.result_o(div_result),
+		.ready_o(div_ready)
 	);
 
 endmodule // openmips
