@@ -28,7 +28,7 @@ module div(
 
 
     //div_temp的高32位是每次迭代的被减数，此处进行的就是minuend-n运算
-    assign div_temp = {1'b0, div_temp[63:32]} - {1'b0, divisor};
+    assign div_temp = {1'b0, dividend[63:32]} - {1'b0, divisor};
 
     always @(posedge clk) begin
         if(rst == `RstEnable) begin
