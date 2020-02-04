@@ -5,11 +5,16 @@
 `include "defines.v"
 
 module pc_reg(
-    input  wire  clk,    //时钟信号
-    input  wire  rst,    //复位信号
-    input  wire[5:0]    stall,      //来自控制模块CTRL
-    output reg[`InstAddrBus] pc,
-    output reg  ce
+    input  wire                 clk,    //时钟信号
+    input  wire                 rst,    //复位信号
+    input  wire [5:0]           stall,      //来自控制模块CTRL
+
+    //来自译码阶段ID的信息
+    input  wire                 branch_flag_i,  
+    input  wire [`RegBus]       branch_target_address_i,
+    
+    output reg[`InstAddrBus]    pc,
+    output reg                  ce
 );
 
     always @(posedge clk) begin
@@ -20,11 +25,16 @@ module pc_reg(
         end
     end
 
+    //这相当于一个MUX
     always @(posedge clk) begin
         if (ce == `ChipDisable) begin
             pc <= 32'h00000000;      //指令寄存器禁用的时候，PC=0
         end else if(stall[0] == `NoStop) begin
-            pc <= pc + 4'h4;         //指令寄存器使能的时候，PC的值每时钟周期加4（因为地址是按字节编址，而数据线是32位）
-        end                         //这也相当于一个MUX
+            if(brach_flag_i == `Branch) begin
+                pc  <=  branch_target_address_i;
+            end else begin
+                pc <= pc + 4'h4;         //指令寄存器使能的时候，PC的值每时钟周期加4（因为地址是按字节编址，而数据线是32位）
+            end
+        end                         
     end
 endmodule
