@@ -30,7 +30,7 @@ module pc_reg(
         if (ce == `ChipDisable) begin
             pc <= 32'h00000000;      //指令寄存器禁用的时候，PC=0
         end else if(stall[0] == `NoStop) begin
-            if(brach_flag_i == `Branch) begin
+            if(branch_flag_i == `Branch) begin
                 pc  <=  branch_target_address_i;
             end else begin
                 pc <= pc + 4'h4;         //指令寄存器使能的时候，PC的值每时钟周期加4（因为地址是按字节编址，而数据线是32位）
