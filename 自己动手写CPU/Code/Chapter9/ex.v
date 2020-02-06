@@ -40,6 +40,8 @@ module ex(
     //当前执行阶段的指令是否位于延迟槽
     input  wire                 is_in_delayslot_i,
 
+    input  wire [`RegBus]       inst_i,
+
     //执行结果
     output reg [`RegAddrBus]    wd_o,
     output reg                  wreg_o,
@@ -57,6 +59,11 @@ module ex(
     output reg [`RegBus]        div_opdata2_o,
     output reg                  div_start_o,
     output reg                  signed_div_o,
+
+    //以下几个输出是为加载、存储指令准备的，且这三个输出都是wire型，说明它们随着输入的变化而立即变化，连续赋值
+    output wire [`AluOpBus]     aluop_o,
+    output wire [`RegBus]       mem_addr_o,
+    output wire [`RegBus]       reg2_o,
 
     output reg                  stallreq
 );
@@ -104,6 +111,11 @@ module ex(
                           :(reg1_i < reg2_i );
 
     assign reg1_i_not = ~reg1_i;
+
+    assign aluop_o  =   aluop_i;  //将传递给访存阶段
+    assign mem_addr_o   =   reg1_i + {{16{inst_i[15]}}, inst_i[15:0]};  //计算后的要加载或存储的地址
+    assign reg2_o   =   reg2_i;     //reg2_i是存储指令要存储的数据，或者lwl、lwr要加载到的目的寄存器的原始值
+
     
     /**************第一段：得到最新的HI、LO的值，此处要解决数据相关的问题******************/
     always @(*) begin
