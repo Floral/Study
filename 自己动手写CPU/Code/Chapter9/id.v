@@ -41,7 +41,7 @@ module id(
 	output reg [`RegBus]	link_addr_o,			//返回地址
 	output reg 				is_in_delayslot_o,		//当前位于译码阶段的指令是否位于延迟槽
 
-	output reg [`RegBus] 	inst_o,		//位于译码阶段的指令
+	output wire [`RegBus] 	inst_o,		//位于译码阶段的指令
 
 	output wire 			stallreq
 );

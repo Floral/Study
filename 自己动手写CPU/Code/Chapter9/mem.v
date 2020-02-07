@@ -41,7 +41,7 @@ module mem(
 );
 
     wire [`RegBus]  zero32;
-    reg             mem_we,
+    reg             mem_we;
 
     assign mem_we_o = mem_we;
     assign zero32   = `ZeroWord;

@@ -40,7 +40,7 @@ module data_ram(
 	always @ (*) begin
 		if (ce == `ChipDisable) begin
 			data_o <= `ZeroWord;
-	  end else if(we == `WriteDisable) begin
+	    end else if(we == `WriteDisable) begin
 		    data_o <= {data_mem3[addr[`DataMemNumLog2+1:2]],
 		               data_mem2[addr[`DataMemNumLog2+1:2]],
 		               data_mem1[addr[`DataMemNumLog2+1:2]],
