@@ -18,7 +18,7 @@ module LLbit_reg(
     always @(posedge clk) begin
         if(rst == `RstEnable) begin
             LLbit_o <=  1'b0;
-        end else if(flush == 1'b0) begin    //如果异常发生，则设置为0
+        end else if(flush == 1'b1) begin    //如果异常发生，则设置为0
             LLbit_o <=  1'b0;
         end else if( we == `WriteEnable) begin
             LLbit_o <=  LLbit_i;

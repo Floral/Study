@@ -57,7 +57,7 @@ module mem(
 
 	always @(*) begin
 		if (rst == `RstEnable) begin
-			LLBit	<=	1'b0;
+			LLbit	<=	1'b0;
 		end else begin
 			if (wb_LLbit_we_i == 1'b1) begin
 				LLbit	<=	wb_LLbit_value_i;	//回写阶段要写LLbit

@@ -387,7 +387,7 @@ module openmips(
 		.mem_ce_o(ram_ce_o),
 
 		.LLbit_we_o(mem_LLbit_we_o),
-		.LLbit_value_o(mem_LLbit_value_o),
+		.LLbit_value_o(mem_LLbit_value_o)
 	);
 
   //MEM/WB模块实例化
