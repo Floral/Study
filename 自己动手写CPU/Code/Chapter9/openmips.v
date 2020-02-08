@@ -171,6 +171,8 @@ module openmips(
 		.mem_wdata_i(mem_wdata_o),
 		.mem_wd_i(mem_wd_o),
 
+		.ex_aluop_i(ex_aluop_o),
+
 		.is_in_delayslot_i(is_in_delayslot_i),
 
 		//送到regfile的信息
