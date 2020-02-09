@@ -795,8 +795,8 @@ module id(
 				end
 			end //endif		  
 		  
-		  	if(inst_i[31:21] == 11'b01000000000 && 
-				inst_i[10:0] == 11'b00000000000) begin
+		  	if((inst_i[31:21] == 11'b01000000000 && 
+				inst_i[10:0] == 11'b00000000000)) begin
 				aluop_o <= `EXE_MFC0_OP;
 				alusel_o <= `EXE_RES_MOVE;
 				wd_o <= inst_i[20:16];
@@ -804,8 +804,8 @@ module id(
 				instvalid <= `InstValid;	   
 				reg1_read_o <= 1'b0;
 				reg2_read_o <= 1'b0;		
-			end else if(inst_i[31:21] == 11'b01000000100 && 
-				inst_i[10:0] == 11'b00000000000) begin
+			end else if((inst_i[31:21] == 11'b01000000100 && 
+				inst_i[10:0] == 11'b00000000000)) begin
 				aluop_o <= `EXE_MTC0_OP;
 				alusel_o <= `EXE_RES_NOP;
 				wreg_o <= `WriteDisable;
