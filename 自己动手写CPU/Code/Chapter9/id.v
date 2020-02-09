@@ -794,7 +794,7 @@ module id(
 					instvalid <= `InstValid;	
 				end
 			end //endif		  
-		  
+			
 		end       //else
 	end         //always
 	

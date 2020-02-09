@@ -29,6 +29,17 @@ module ex(
     input  wire [`RegBus]       mem_lo_i,
     input  wire                 mem_whilo_i,
 
+    //访存阶段指令是否要写cp0中的寄存器
+    input  wire                 mem_cp0_reg_we,
+    input  wire [4:0]           mem_cp0_reg_write_addr,
+    input  wire [`RegBus]       mem_cp0_reg_data,
+
+    //回写阶段。。。。。。。。。。。。。
+    input  wire                 wb_cp0_reg_we,
+    input  wire [4:0]           wb_cp0_reg_write_addr,
+    input  wire [`RegBus]       wb_cp0_reg_data,
+    
+
     input  wire [`DoubleRegBus] hilo_temp_i,    //第一个执行周期得到的乘法结果
     input  wire [1:0]           cnt_i,          //当前处于执行阶段的第几个时钟周期
 
@@ -41,6 +52,10 @@ module ex(
     input  wire                 is_in_delayslot_i,
 
     input  wire [`RegBus]       inst_i,
+
+    //与cp0直接相连，用于读取当前cp0中寄存器的值
+    input  wire [`RegBus]       cp0_reg_we_o,
+    output reg                  cp0_reg_read_addr_o,
 
     //执行结果
     output reg [`RegAddrBus]    wd_o,
@@ -64,6 +79,10 @@ module ex(
     output wire [`AluOpBus]     aluop_o,
     output wire [`RegBus]       mem_addr_o,
     output wire [`RegBus]       reg2_o,
+
+    output reg                  cp0_reg_we_o,
+    output reg [4:0]            cp0_reg_write_addr_o,
+    output reg [`RegBus]        cp0_reg_data_o,                 
 
     output reg                  stallreq
 );
@@ -148,6 +167,17 @@ module ex(
 	   	        end
 	   	        `EXE_MOVN_OP: begin
 	   	        	moveres <= reg1_i;
+	   	        end
+                `EXE_MFC0_OP: begin
+	   	            cp0_reg_read_addr_o <= inst_i[15:11];
+	   		        moveres <= cp0_reg_data_i;
+	   		        if( mem_cp0_reg_we == `WriteEnable &&       //解决数据相关问题
+	   		    		mem_cp0_reg_write_addr == inst_i[15:11] ) begin
+	   				    moveres <= mem_cp0_reg_data;
+	   		        end else if( wb_cp0_reg_we == `WriteEnable &&
+	   				wb_cp0_reg_write_addr == inst_i[15:11] ) begin
+	   				    moveres <= wb_cp0_reg_data;
+	   		        end
 	   	        end
                 default: begin
                 end
@@ -434,6 +464,7 @@ module ex(
     end
 
     /*****************第四段:如果是MULT、MULTU、MTHI、MTLO指令，那么需要给出whilo_o,hi_o,lo_i的值**************/
+    //如果是MTC0，则给出cp0相关的输出
     always @(*) begin
         if (rst==`RstEnable) begin
             whilo_o <=  `WriteDisable;
@@ -472,6 +503,22 @@ module ex(
             lo_o    <=  `ZeroWord;
         end
     end
+
+    always @ (*) begin
+		if(rst == `RstEnable) begin
+			cp0_reg_write_addr_o <= 5'b00000;
+			cp0_reg_we_o <= `WriteDisable;
+			cp0_reg_data_o <= `ZeroWord;
+		end else if(aluop_i == `EXE_MTC0_OP) begin
+			cp0_reg_write_addr_o <= inst_i[15:11];
+			cp0_reg_we_o <= `WriteEnable;
+			cp0_reg_data_o <= reg1_i;
+	  end else begin
+			cp0_reg_write_addr_o <= 5'b00000;
+			cp0_reg_we_o <= `WriteDisable;
+			cp0_reg_data_o <= `ZeroWord;
+		end				
+	end	
 
 
 endmodule // ex
