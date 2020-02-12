@@ -55,7 +55,7 @@ module ex(
 
     //与cp0直接相连，用于读取当前cp0中寄存器的值
     input  wire [`RegBus]       cp0_reg_data_i,
-    output reg                  cp0_reg_read_addr_o,
+    output reg [4:0]            cp0_reg_read_addr_o,
 
     //执行结果
     output reg [`RegAddrBus]    wd_o,

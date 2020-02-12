@@ -58,7 +58,7 @@ module ex(
 
     //与cp0直接相连，用于读取当前cp0中寄存器的值
     input  wire [`RegBus]       cp0_reg_data_i,
-    output reg                  cp0_reg_read_addr_o,
+    output reg [4:0]            cp0_reg_read_addr_o,
 
     //执行结果
     output reg [`RegAddrBus]    wd_o,
@@ -232,7 +232,7 @@ module ex(
 	   		    		mem_cp0_reg_write_addr == inst_i[15:11] ) begin
 	   				    moveres <= mem_cp0_reg_data;
 	   		        end else if( wb_cp0_reg_we == `WriteEnable &&
-	   				wb_cp0_reg_write_addr == inst_i[15:11] ) begin
+	   				    wb_cp0_reg_write_addr == inst_i[15:11] ) begin
 	   				    moveres <= wb_cp0_reg_data;
 	   		        end
 	   	        end
@@ -572,7 +572,7 @@ module ex(
 			cp0_reg_write_addr_o <= inst_i[15:11];
 			cp0_reg_we_o <= `WriteEnable;
 			cp0_reg_data_o <= reg1_i;
-	  end else begin
+	    end else begin
 			cp0_reg_write_addr_o <= 5'b00000;
 			cp0_reg_we_o <= `WriteDisable;
 			cp0_reg_data_o <= `ZeroWord;
