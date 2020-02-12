@@ -12,6 +12,10 @@ module cp0_reg(
 
     input  wire [5:0]       int_i,      //6个外部硬件中断输入
 
+	input  wire [31:0]      excepttype_i,
+	input  wire [`RegBus]   current_inst_addr_i,
+	input  wire             is_in_delayslot_i,
+
     output reg [`RegBus]    data_o,     //读取CP0中某个寄存器的值
 	output reg [`RegBus]    count_o,
 	output reg [`RegBus]    compare_o,
@@ -69,6 +73,77 @@ module cp0_reg(
 					end					
 				endcase  //case addr_i
 			end
+
+			case (excepttype_i)
+				32'h00000001:begin		//外部中断
+					if(is_in_delayslot_i == `InDelaySlot ) begin
+						epc_o <= current_inst_addr_i - 4 ;
+						cause_o[31] <= 1'b1;		//cause寄存器BD字段
+					end else begin
+					  	epc_o <= current_inst_addr_i;
+					  	cause_o[31] <= 1'b0;
+					end
+					status_o[1] <= 1'b1;		//status的EXL字段
+					cause_o[6:2] <= 5'b00000;	//Cause的ExcCode字段
+				end
+				32'h00000008:begin		//系统调用异常
+					if(status_o[1] == 1'b0) begin
+						if(is_in_delayslot_i == `InDelaySlot ) begin
+							epc_o <= current_inst_addr_i - 4 ;
+							cause_o[31] <= 1'b1;
+						end else begin
+					  		epc_o <= current_inst_addr_i;
+					  		cause_o[31] <= 1'b0;
+						end
+					end
+					status_o[1] <= 1'b1;
+					cause_o[6:2] <= 5'b01000;			
+				end
+				32'h0000000a:begin		//无效指令
+					if(status_o[1] == 1'b0) begin
+						if(is_in_delayslot_i == `InDelaySlot ) begin
+							epc_o <= current_inst_addr_i - 4 ;
+							cause_o[31] <= 1'b1;
+						end else begin
+					  		epc_o <= current_inst_addr_i;
+					  		cause_o[31] <= 1'b0;
+						end
+					end
+					status_o[1] <= 1'b1;
+					cause_o[6:2] <= 5'b01010;					
+				end
+				32'h0000000d:begin		//自陷异常
+					if(status_o[1] == 1'b0) begin
+						if(is_in_delayslot_i == `InDelaySlot ) begin
+							epc_o <= current_inst_addr_i - 4 ;
+							cause_o[31] <= 1'b1;
+						end else begin
+					  		epc_o <= current_inst_addr_i;
+					  		cause_o[31] <= 1'b0;
+						end
+					end
+					status_o[1] <= 1'b1;
+					cause_o[6:2] <= 5'b01101;					
+				end
+				32'h0000000c:begin		//溢出异常
+					if(status_o[1] == 1'b0) begin
+						if(is_in_delayslot_i == `InDelaySlot ) begin
+							epc_o <= current_inst_addr_i - 4 ;
+							cause_o[31] <= 1'b1;
+						end else begin
+					  		epc_o <= current_inst_addr_i;
+					  		cause_o[31] <= 1'b0;
+						end
+					end
+					status_o[1] <= 1'b1;
+					cause_o[6:2] <= 5'b01100;					
+				end				
+				32'h0000000e:begin		//异常返回指令eret
+					status_o[1] <= 1'b0;
+				end
+				default:begin
+				end
+			endcase
 		end
     end
 
