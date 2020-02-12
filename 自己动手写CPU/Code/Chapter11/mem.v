@@ -150,7 +150,7 @@ module mem(
 							(cp0_status[0] == 1'b1)) begin	//判断是否允许中断
 					excepttype_o <= 32'h00000001;        //interrupt
 				end else if(excepttype_i[8] == 1'b1) begin
-			  	excepttype_o <= 32'h00000008;        //syscall
+			  		excepttype_o <= 32'h00000008;        //syscall
 				end else if(excepttype_i[9] == 1'b1) begin
 					excepttype_o <= 32'h0000000a;        //inst_invalid
 				end else if(excepttype_i[10] ==1'b1) begin

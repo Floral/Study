@@ -23,6 +23,7 @@ module openmips_min_sopc(
 	wire[5:0]			int;
 	wire				timer_int;
  
+	assign int = {5'b00000, timer_int};
 	//实例化处理器open MIPS
  	openmips openmips0(
 		.clk(clk),
