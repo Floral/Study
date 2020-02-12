@@ -53,6 +53,9 @@ module ex(
 
     input  wire [`RegBus]       inst_i,
 
+    input  wire [31:0]          excepttype_i,
+    input  wire [`RegBus]       current_inst_address_i,
+
     //与cp0直接相连，用于读取当前cp0中寄存器的值
     input  wire [`RegBus]       cp0_reg_data_i,
     output reg                  cp0_reg_read_addr_o,
@@ -82,7 +85,11 @@ module ex(
 
     output reg                  cp0_reg_we_o,
     output reg [4:0]            cp0_reg_write_addr_o,
-    output reg [`RegBus]        cp0_reg_data_o,                 
+    output reg [`RegBus]        cp0_reg_data_o,    
+
+    output wire [31:0]          excepttype_o,
+    output wire                 is_in_delayslot_o,
+    output wire [`RegBus]       current_inst_address_o,            
 
     output reg                  stallreq
 );
@@ -109,10 +116,23 @@ module ex(
     reg                     stallreq_for_madd_msub;
     reg                     stallreq_for_div;
 
+    reg trapassert;     //自陷异常
+    reg ovassert;       //溢出异常
+
+    assign excepttype_o = {excepttype_i[31:12], ovassert, trapassert,
+                            excepttype_i[9:8],8'h00};
+
+    assign is_in_delayslot_o = is_in_delayslot_i;
+    assign current_inst_address_o = current_inst_address_i;
+
 
     assign reg2_i_mux = ((aluop_i == `EXE_SUB_OP) ||
                          (aluop_i == `EXE_SUBU_OP)||
-                         (aluop_i == `EXE_SLT_OP)) ?
+                         (aluop_i == `EXE_SLT_OP) ||
+                         (aluop_i == `EXE_TLT_OP) ||
+	                     (aluop_i == `EXE_TLTI_OP)|| 
+                         (aluop_i == `EXE_TGE_OP) ||
+	                     (aluop_i == `EXE_TGEI_OP)) ?
                          (~reg2_i)+1 : reg2_i;  //如果是减法或有符号比较运算，则存reg2的补码
                         //这里全部取反再加1的话就相当于是 得到了原来的数的相反数的补码，也就有了下面相减的结果
     assign result_sum = reg1_i + reg2_i_mux;    //如果reg2_i_mux是补码，那么result_sum就是reg1-reg2的结果了
@@ -123,17 +143,54 @@ module ex(
                     || ((reg1_i[31] && reg2_i_mux[31]) && (!result_sum[31]));
     
     //判断操作数1是否小于操作数2
-    assign reg1_lt_reg2 = ((aluop_i == `EXE_SLT_OP)) ?
+    assign reg1_lt_reg2 = ((aluop_i == `EXE_SLT_OP) || (aluop_i == `EXE_TLT_OP) ||
+	                       (aluop_i == `EXE_TLTI_OP)|| (aluop_i == `EXE_TGE_OP) ||
+	                       (aluop_i == `EXE_TGEI_OP)) ?
                           ((reg1_i[31] && !reg2_i[31]) ||   //1为负，2为正
                           (!reg1_i[31] && !reg2_i[31] && result_sum[31]) || //1，2都为正，数1减数2为负
                           (reg1_i[31] && reg2_i[31] && result_sum[31])) //1、2都为负，数1减数2为负
-                          :(reg1_i < reg2_i );
+                          :(reg1_i < reg2_i);
 
     assign reg1_i_not = ~reg1_i;
 
     assign aluop_o  =   aluop_i;  //将传递给访存阶段
     assign mem_addr_o   =   reg1_i + {{16{inst_i[15]}}, inst_i[15:0]};  //计算后的要加载或存储的地址
     assign reg2_o   =   reg2_i;     //reg2_i是存储指令要存储的数据，或者lwl、lwr要加载到的目的寄存器的原始值
+
+    //*************判断是否发生自陷异常*************
+    always @ (*) begin
+		if(rst == `RstEnable) begin
+			trapassert <= `TrapNotAssert;
+		end else begin
+			trapassert <= `TrapNotAssert;
+			case (aluop_i)
+				`EXE_TEQ_OP, `EXE_TEQI_OP:	begin
+					if( reg1_i == reg2_i ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				`EXE_TGE_OP, `EXE_TGEI_OP, `EXE_TGEIU_OP, `EXE_TGEU_OP:	begin
+					if( ~reg1_lt_reg2 ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				`EXE_TLT_OP, `EXE_TLTI_OP, `EXE_TLTIU_OP, `EXE_TLTU_OP:	begin
+					if( reg1_lt_reg2 ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				`EXE_TNE_OP, `EXE_TNEI_OP:	begin
+					if( reg1_i != reg2_i ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				default: begin
+					trapassert <= `TrapNotAssert;
+				end
+			endcase
+		end
+	end
+
 
     
     /**************第一段：得到最新的HI、LO的值，此处要解决数据相关的问题******************/
@@ -434,8 +491,10 @@ module ex(
         if (((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDI_OP) ||
             (aluop_i == `EXE_SUB_OP)) && (ov_sum == 1'b1)) begin    //这里曾经有一个 括号位置引发的惨剧。。。注意&&的优先级比||高
             wreg_o  <=  `WriteDisable;
+            ovassert <= 1'b1;
         end else begin
             wreg_o  <=  wreg_i;
+            ovassert <= 1'b0;
         end
 
         case (alusel_i)
