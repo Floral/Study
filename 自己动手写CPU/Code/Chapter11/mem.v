@@ -96,7 +96,7 @@ module mem(
 		if (rst == `RstEnable) begin
 			cp0_status	<=	`ZeroWord;
 		end else if ((wb_cp0_reg_we == `WriteEnable) &&	//如果回写阶段要写入cp0的status，则为最新值
-					(wb_cp0_reg_write_addr == `CP0_REGSTATUS))begin
+					(wb_cp0_reg_write_addr == `CP0_REG_STATUS))begin
 			cp0_status	<=	wb_cp0_reg_data;
 		end else begin
 			cp0_status	<=	cp0_status_i;
