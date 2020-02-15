@@ -1,11 +1,11 @@
 
-
+`include "defines.v"
 
 module wishbone_bus_if(
     input wire				      clk,
 	input wire					  rst,
 	
-	//??????ctrl
+	//来自ctrl模块
 	input wire[5:0]               stall_i,
 	input                         flush_i,
 	
