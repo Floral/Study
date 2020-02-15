@@ -476,15 +476,29 @@ MIPS32架构定义了处理器的两种工作模式：**用户模式、内核模
 
 ## 第十二章 实践版OpenMIPS处理器设计与实现
 
+**本章关键词：总线结构、控制器、Wishbone总线、总线接口**
+
+
+
+前面11章，我们实现了教学版的OpenMIPS处理器，其SOPC结构如下：
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\教学版OpenMIPS的最小SOPC结构.jpg" alt="教学版OpenMIPS的最小SOPC结构" style="zoom: 33%;" />
+
+其ROM和RAM都位于FPGA内部，但是在实际的应用中，由于ROM和RAM的需求都比较大，以至于不可能集成在FPGA中了（实际的ROM使用的是Flash，RAM是SDRAM），于是我们需要向OpenMIPS添加对应外部设备的控制器，例如：Flash控制器和SDRAM控制器。
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\实用化OpenMIPS的最小SOPC结构.jpg" alt="实用化OpenMIPS的最小SOPC结构" style="zoom:33%;" />
+
+很容易发现，我们每次为OpenMIPS添加外部设备，都需要在OpenMIPS内部添加相应的**控制器**，这很麻烦，不符合人类“懒”的天性，于是懒懒的人类便想出了总线这一方案。熟悉PC的人知道，主板上面有PCI（Peripheral Component Interconnect），其就是PCI总线的接口，中文名为外部控制器接口，许多设备即插即用（内存，网卡等）。借鉴这种结构，本章也要为我们的OpenMIPS加上总线结构，加上总线后，我们只需在OpenMIPS上添加两个（哈佛结构的原因）与总线相连的接口即可“一劳永逸”，两个接口分别为：**指令总线接口、数据总线接口**。添加外部设备时，当然还是需要控制器啦，但是这次我们可以使用已有的开源的IP核，为了方便连接，许多公司的IP核遵守相同的总线规范（总线规范定义了IP核之间的通用接口）。控制器的一端与总线相连，另一端与外设相连，即构成了通信通路，如下图。
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\使用总线的OpenMIPS的最小SOPC结构.jpg" alt="使用总线的OpenMIPS的最小SOPC结构" style="zoom:33%;" />
 
 
 
 
 
-
-
-
-
+> IP核（Intellectual Property core）是一段具有特定电路功能的硬件描述语言程序，该程序与集成电路工艺无关，可以移植到不同的半导体工艺中去生产集成电路芯片。
+>
+> 关于IP核相关的科普blog：https://blog.csdn.net/Reborn_Lee/article/details/82756284
 
 ## 附录
 
