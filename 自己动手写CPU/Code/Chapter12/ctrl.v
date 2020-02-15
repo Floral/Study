@@ -8,6 +8,9 @@ module ctrl(
     input  wire             stallreq_from_id,
     input  wire             stallreq_from_ex,
 
+    input  wire             stallreq_from_if,
+    input  wire             stallreq_from_mem,
+
     //来自MEM模块的信号
     input  wire [31:0]      excepttype_i,
     input  wire [`RegBus]   cp0_epc_i,
@@ -57,11 +60,18 @@ module ctrl(
 				default	: begin
 				end
 			endcase
+        //请求暂停的顺序是从后往前开始判断的，因为靠后的流水线阶段请求暂停肯定会让前面的阶段也暂停
+        end else if(stallreq_from_mem == `Stop) begin
+            stall   <=  6'b011111;
+            flush   <=  1'b0;
         end else if(stallreq_from_ex == `Stop) begin
             stall   <=  6'b001111;
             flush   <=  1'b0;
         end else if(stallreq_from_id == `Stop) begin
             stall   <=  6'b000111;
+            flush   <=  1'b0;
+        end else if(stallreq_from_if == `Stop) begin
+            stall   <=  6'b000111;  //这里同时暂停译码阶段是为了正确识别延迟槽指令，因为这会影响到异常处理
             flush   <=  1'b0;
         end else begin
             stall   <=  6'b000000;

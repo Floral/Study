@@ -281,3 +281,10 @@
 `define CP0_REG_EPC    5'b01110          //可读写
 `define CP0_REG_PrId    5'b01111         //只读
 `define CP0_REG_CONFIG    5'b10000       //只读
+
+
+//wishbone总线的状态机
+`define WB_IDLE 2'b00
+`define WB_BUSY 2'b01
+`define WB_WAIT_FOR_FLUSHING 2'b10
+`define WB_WAIT_FOR_STALL 2'b11
