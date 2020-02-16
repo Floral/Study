@@ -235,7 +235,7 @@ ex中接收inst_i，新增aluop_o、mem_addr_o、reg2_o输出，并传递到mem.
 
 mem.v新增的用于控制data_ram的输出包括mem_data_o、mem_addr_o、mem_we_o、mem_sel_o、mem_ce_o。依次是：要写入的数据、要写入的地址、是否要写入、字节选择信号、存储器使能信号。
 
-另外，由于data_ram的读写总是针对一个对齐后的字（可以看作不考虑mem_addr_o的最低两位的值），所以我们在mem阶段就要通过mem_addr_i的值来设置mem_sel_o的值。
+另外，由于**data_ram的读写总是针对一个对齐后的字**（可以看作**不考虑mem_addr_o的最低两位的值**），所以我们在mem阶段就要通过mem_addr_i的值来设置mem_sel_o的值。
 
 ### data_ram.v
 
@@ -478,7 +478,7 @@ MIPS32架构定义了处理器的两种工作模式：**用户模式、内核模
 
 **本章关键词：总线结构、控制器、Wishbone总线、总线接口**
 
-
+### 总线
 
 前面11章，我们实现了教学版的OpenMIPS处理器，其SOPC结构如下：
 
@@ -492,13 +492,67 @@ MIPS32架构定义了处理器的两种工作模式：**用户模式、内核模
 
 <img src="E:\Documents\Study_Notes\自己动手写CPU\pic\使用总线的OpenMIPS的最小SOPC结构.jpg" alt="使用总线的OpenMIPS的最小SOPC结构" style="zoom:33%;" />
 
-
-
-
-
 > IP核（Intellectual Property core）是一段具有特定电路功能的硬件描述语言程序，该程序与集成电路工艺无关，可以移植到不同的半导体工艺中去生产集成电路芯片。
 >
 > 关于IP核相关的科普blog：https://blog.csdn.net/Reborn_Lee/article/details/82756284
+
+
+
+### Wishbon总线
+
+总线规范也分为多种，分别由不同公司提出。本书采用的是Silicore公司提出的Wishbone，其是免费开源的。
+
+Wishbone总线接口有多种连接方式：点对点、数据流、共享总线、交叉互联等。我们在这里采用的是点对点方式，该方式包括主设备和从设备，示意图如下：
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_1.JPG" alt="chapter12_1" style="zoom: 10%;" />
+
+
+
+其中，以`_I`结尾的是输入信号，以`_O`结尾的是输出信号。
+
+CLK、RST、WE（Write Enable）、ADR（Address）这些相信大家都很熟悉了，SEL是数据总线选择信号，用于选择32的字中的某些字节，与mem中的sel一样，DAT代表的是data，是数据总线。CYC是总线周期信号，其有效的时候代表一个主设备请求总线使用权或正在使用总线，但是不一定正在进行**总线操作**（也就是是否正在做实事，有可能是“占着茅坑不拉shi”）。是否在进行总线操作取决于STO信号（选通信号），只有选通信号有效时，ADR、DAT、SEL才有意义，同时只有在CYC信号有效的时候，其他信号（除CYC外的）所有信号才有意义。CYC有效时，表示进入了一个总线周期，**一个总线周期可能需要多个时钟周期**。ACK信号有效时表示操作的成功，属于操作结束信号，操作结束信号还包括ERR（错误）、RTY（重试），只不过这里我们只用到了ACK。TAGN是标签信号，用户可以利用标签信号传递自定义的信息。
+
+总线操作有：单次读/写操作、块读/写操作等等。首先以CYC的有效标志一个总线周期的开始，继而由STO的有效标志一个总线操作的开始，CYC和STO也可以同时有效，表示总线周期开始的同时发起一次总线操作。
+
+
+
+### 实践版OpenMIPS处理器接口
+
+先出教学版和实践版的接口图：
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_2.JPG" alt="chapter12_2" style="zoom:10%;" />
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_3.JPG" alt="chapter12_3" style="zoom:10%;" />
+
+从这两张图可以看出，我们将原本IF阶段、MEM阶段与ROM和RAM直接相连的输入输出都换成了wishbone的标准接口形式，其中iwishbone代表的是instruction wishbone，dwishbone代表的是data wishbone，分别是IF、MEM阶段的输出。
+
+在OpenMIPS内部，实现思路是使PC模块和MEM模块分别与标准的Wishbone总线接口模块相连，再连接至外部总线，结构简图如下：
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_4.JPG" alt="chapter12_4" style="zoom:10%;" />
+
+
+
+具体实现如下：
+
+<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_5.JPG" alt="chapter12_5" style="zoom:15%;" />
+
+由于Wishbone总线接口都是有规范的，所以我们只需写好一个模块，然后实例化多个就行了。
+
+由图可以看出，ctrl模块新增了if阶段和mem阶段的中断请求，这是由于添加了Wishbone总线接口后，取指和访存阶段所需要花的时间会多于一个时钟周期，在指令和MEM数据没有取到的时候，需要请求暂停流水线。
+
+Wishbone总线接口的具体实现是一个有限状态机，同时包含给处理器接口赋值的组合电路，具体请看代码或书。
+
+修改CTRL模块的时候，**需要注意的一点**就是，在取指阶段请求暂停时，除了要暂停PC和取指，也需要暂停译码阶段，这是因为考虑一种特殊情况：如果在请求暂停时，译码阶段的指令是一个转移指令，那么取指阶段将要取到的指令就是延迟槽指令，如果不暂停译码阶段，那么CPU的IF阶段就会插入一个NOP指令（详见if_id.v代码），导致译码阶段错误地将NOP指令识别为延迟槽指令，从而导致出错。
+
+
+
+
+
+
+
+
+
+
 
 ## 附录
 
