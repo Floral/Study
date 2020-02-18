@@ -2,28 +2,27 @@
 
 以下是各笔记相关的学习书籍、资料：
 
-1. 汇编语言
+1. 自己动手写CPU
    
+   - 《自己动手写CPU》	雷思磊
+   
+2. 汇编语言
+
    - 《汇编语言（第三版）》 王爽
-   
-2. C++
-   
+
+3. C++
+
    - 《Essential C++》
    - 《C++ Primer》（第五版）
-   
-3. 数据结构与算法
-   
-- 《算法竞赛入门经典（第二版）》
+
+4. 数据结构与算法
+   - 《算法竞赛入门经典（第二版）》
    - 《数据结构（C++语言版）》（第三版） 邓俊辉
    - 《数据结构与算法分析——C++语言描述》（第四版） [美] Mark Allen Weiss
-   
-4. MachineLearning
+
+5. MachineLearning
    - 《Machine Learning》.coursera mooc.吴恩达
    - 人工智能实践：TensorFlow笔记.北京大学MOOC
-   
-5. 自己动手写CPU
-
-   - 《自己动手写CPU》	雷思磊
 
    
 
