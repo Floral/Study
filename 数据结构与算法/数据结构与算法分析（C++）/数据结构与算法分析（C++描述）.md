@@ -273,3 +273,63 @@ AVL树是如何保证平衡条件的呢？是通过在每次插入操作后执�
 > 1. https://www.sohu.com/a/154640931_478315
 >
 > 2. https://blog.csdn.net/qq_35571554/article/details/82759668?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
+
+这里还有个还不错的：
+
+> https://blog.csdn.net/wxx17353227396/article/details/92431808?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
+
+
+
+### 4.8 STL中的set和map
+
+这里我只简述以下set和map的一些我觉得特殊的/要注意的地方。
+
+#### 集合容器set
+
+set的insert方法返回的是一个pair，具体类型为`pair<iterator, bool>`，这是由于set是一个不允许重复元的集合容器，返回的结果除了要反应插入成功还是失败，还返回了一个指向插入点的iterator，如果插入成功，那么iterator指向的就是刚刚插入成功的元素，如果因为要插入的的项已经存在而导致失败，那么返回的就是原来已经存在的元素的iterator，这样方便了我们对该项的后续操作（修改or删除），不需要再次查找。
+
+#### 映射容器map
+
+对一个map使用`[]`运算符的时候，如果map中存在该关键词，那么就会直接返回相应的`pair<KeyType, ValueType>`；如果不存在，那么就会向该map中新插入一个用默认值初始化Value的pair元素，如果该调用语句后面接了赋值号，那么 接着就会像这个新插入的元素赋值。借助这种机制，我们可以直接往map中添加新元素而不用使用 insert函数。但是这种机制有时候会非常尴尬，因为我们有时候只是想看看map中是否存在该关键字及其值，而不想在不存在的时候插入该关键字的元素。这时候就需要调用map的find函数来完成我们想要的操作了，借助书上的一个例子：
+
+```C++
+map<string, double> salaries;
+
+salaries["Pat"] = 75000.00;
+cout<< salaries["Pat"]	<< endl;	//输出结果为 75000.00
+cout<< salaries["Jan"]	<< endl;	//输出结果为 0.0
+
+map<string, double>::const_iterator itr;
+itr = salaries.find("Chris");
+if(itr == salaries.end())
+    cout<<"Not an employee of this company!"<<end;
+else
+    cout<<itr->second<<endl;
+```
+
+
+
+#### 实现（P142）
+
+> C++要求set和map以对数最坏情形时间支持基本的insert、erase和find操作，因此，基础的实现方法就是平衡二叉树。但是一般说来，我们并不使用AVL树，而经常使用一些自顶向下的红黑树，它们将在12.2节讨论。
+
+在具体的实现方案中，本书还提到了一个名为“**线索树（threaded tree）**”的树，线索树应用于许多STL中。它的思想是利用原本二叉查找树中节点的nullptr指针，如果一个节点的左孩子指针为nullptr，那么就将这个指针指向该节点的中序前驱元（inorder predecessor），如果一个结点的右孩子指针为nullptr，那么就将这个指针指向该节点的中序后继元（inorder successor），这些附加的链就叫做线索（thread）。
+
+
+
+#### 使用多个map的示例
+
+在本书的这一小节，我最大的收获就是学到了、感受到了分而治之的“威力”。
+
+对于一个非常大的集合来说，要处理该集合中的每一个元素（各个元素之间需要相互比较时，或者需要多层for循环的时候），最简单、直接的方法就是不做任何处理，直接干，不管三七二十一，见到要遍历处理的就直接嵌套多层for循环。而往往这样直白的方法效率是最低的。
+
+我们可以思考一下是否能对原集合进行一定的分类处理，然后再分别对每类的集合遍历处理。本书的这一节就是一步一步地深化分类，分得越来越细致，从而逐渐提高效率的。
+
+其实从数学角度也可以证明，假如原集合有100个元素，直接嵌套两层循环的话，那么需要循环100x99=9900次。如果将100个元素分成两类，每类50个元素，那么总共只需循环2x50x49=4900次，如果继续分类的话，总的次数会越来越少。这也让我联想到了学习数字信号处理时的*快速傅里叶算法*（这个算法的原理与我这里简述的差不多，感兴趣的可以去查查），也正是因为这个算法，才让傅里叶变换得以在计算机上能发挥实际作用。
+
+
+
+
+
+
+
