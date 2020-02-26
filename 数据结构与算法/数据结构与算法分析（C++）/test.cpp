@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string>
 
 using namespace std;
 
@@ -25,7 +26,13 @@ int main(int argc, char const *argv[])
     A a;
     B b;
     A& p = b;
-    a.func();    
+    // a.func();    
+
+    const string str = "string";
+    for(auto & x: str)
+        cout<<x<<" ";
+
+    cout<<str[0]<<endl;
 
     return 0;
 }
