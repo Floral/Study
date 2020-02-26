@@ -25,8 +25,8 @@ int main(int argc, char const *argv[])
 {
     A a;
     B b;
-    A& p = b;
-    // a.func();    
+    A* p = &b;
+    p->func();    
 
     const string str = "string";
     for(auto & x: str)

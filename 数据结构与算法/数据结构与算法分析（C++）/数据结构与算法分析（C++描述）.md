@@ -87,6 +87,14 @@ MyType func(const vector<MyType> &arr){
 
 模板类接口与实现的分离编译很容易出问题，在这里建议建议放在同一个.h文件中编译。C++的STL也是采取这样的策略。
 
+
+
+#### 函数对象
+
+
+
+
+
 ## 第三章 表、栈和队列
 
 我们通常说的**表ADT（List Abstract Data Type）**在C++中有两种实现，一种是vector，另一种是list。

@@ -6,6 +6,7 @@
         "*.tcc": "cpp",
         "deque": "cpp",
         "unordered_map": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "type_traits": "cpp"
     }
 }
