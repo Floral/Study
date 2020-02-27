@@ -5,6 +5,12 @@
 #include<algorithm>
 #include<functional>
 
+
+int nextPrime(int x)
+{
+    //todo
+}
+
 template<typename T>
 class HashTable
 {
@@ -129,7 +135,7 @@ bool HashTable<T>::insert(T&& x)
 }
 
 template<typename T>
-bool HashTable<T>::remove(const T& x)
+bool HashTable<T>::remove(const T& x)   //值得注意的是，这里的remove并不减小currentSize的值
 {
     int currentPos = findPos(x);
 
@@ -139,6 +145,26 @@ bool HashTable<T>::remove(const T& x)
     array[currentPos].info = DELETED;
 
     return true;
+}
+
+template<typename T>
+void HashTable<T>::rehash()
+{
+    std::vector<HashEntry> oldArray = array;
+
+    //创建两倍大的空表
+    array.resize(nextPrime(2*oldArray.size())); 
+    for (auto& entry : array)
+        entry.info = EMPTY;
+
+    //复制整个表
+    for (auto& entry : oldArray)
+    {
+        if (entry.info = ACTIVE)
+        {
+            insert(std::move(entry.element));
+        }
+    }
 }
 
 #endif

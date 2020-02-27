@@ -102,4 +102,23 @@ bool HashTable<T>::remove(const T& x)
     return true;
 }
 
+template<typename T>
+void HashTable<T>::rehash()
+{
+    vector<list<T>> oldLists = theLists;
+
+    theLists.resize(nextPrime(2*oldLists.size()));
+
+    for (auto& li : theLists)
+        li.clear();
+
+    for (auto& li : oldLists)
+    {
+        for (auto& entry : li)
+        {
+            insert(std::move(entry));
+        }
+    }
+}
+
 #endif
