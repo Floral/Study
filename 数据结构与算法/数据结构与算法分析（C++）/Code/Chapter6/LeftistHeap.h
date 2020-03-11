@@ -1,5 +1,5 @@
-#ifndef LEFT_IST_HEAP
-#define LEFT_IST_HEAP
+#ifndef LEFTIST_HEAP
+#define LEFTIST_HEAP
 
 #include<iostream>
 #include<utility>

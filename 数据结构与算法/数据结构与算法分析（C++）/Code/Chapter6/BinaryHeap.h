@@ -92,6 +92,7 @@ void BinaryHeap<T>::insert(const T& x)
     int hole = ++currentSize;
     T copy = x;
 
+    array[0] = std::move(copy); //是用来解决hole=1的情况的
     for (; copy < array[hole/2]; hole /= 2)
         array[hole] = std::move(array[hole/2]);
 
@@ -106,12 +107,12 @@ void BinaryHeap<T>::insert(T&& x)
     
     int hole = ++currentSize;
 
+    array[0] = std::move(copy); //是用来解决hole=1的情况的
     for (; x < array[hole/2]; hole /= 2)
         array[hole] = std::move(array[hole/2]);
 
     array[hole] = std::move(x);
 }
-
 
 template<typename T>
 void BinaryHeap<T>::deleteMin()
