@@ -5,6 +5,8 @@
 #include<utility>
 #include<functional>
 
+template<typename Iterator, typename Comparator>
+void insertionSort(const Iterator& begin, const Iterator& end, Comparator lessThan);
 //STL版插入排序
 template<typename Iterator>
 void insertionSort(const Iterator& begin, const Iterator& end)
