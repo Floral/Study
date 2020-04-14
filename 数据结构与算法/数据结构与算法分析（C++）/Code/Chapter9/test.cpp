@@ -11,7 +11,7 @@ int main()
     Graph<int, int> g{v};
 
     g.addArc(1, 2);
-    g.addArc(1, 3);
+    g.addArc(3, 1);
     g.addArc(1, 4);
     g.addArc(2, 4);
     g.addArc(2, 5);
@@ -23,12 +23,14 @@ int main()
     g.addArc(5, 7);
     g.addArc(7, 6);
 
-    vector<int> result = g.topsort();
+    // vector<int> result = g.topsort();
 
-    for (auto &i : result)
-    {
-        cout<<i<<endl;
-    }
+    // for (auto &i : result)
+    // {
+    //     cout<<i<<endl;
+    // }
+
+    g.unweighted(3);
 
     // g.printGraph();
     
