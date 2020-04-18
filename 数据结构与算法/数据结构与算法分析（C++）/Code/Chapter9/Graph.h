@@ -29,7 +29,7 @@ private:
     std::vector<VertexNode> vertexList;         //如果用map数据结构来存vertex，那么find的效率会提高，现在是O(N)
 
     VertexNode* findVertex(const T& key);
-    void printPath(const VertexNode*& desV) const;
+    void printPath(const VertexNode* desV) const;
 
 public:
     Graph(/* args */);
@@ -37,7 +37,7 @@ public:
     ~Graph();
 
     void printGraph() const;
-    void printPath(const T& desKey) const;  //打印源节点到目标节点的最短路径
+    void printPath(const T& desKey);  //打印源节点到目标节点的最短路径
 
     void addVertex(const T& key);
     void addVertex(T&& key);
@@ -107,10 +107,11 @@ Graph<T, C>::~Graph()
 template<typename T, typename C>
 typename Graph<T, C>::VertexNode* Graph<T, C>::findVertex(const T& key)
 {
-    for (auto &vertex : vertexList)
+    // int numOfVertex = vertexList.size();
+    for (auto i = vertexList.begin(); i != vertexList.end(); ++i)
     {
-        if (key == vertex.key)
-            return &vertex;
+        if (key == (*i).key)
+            return &(*i);
     }
     return nullptr;
 }
@@ -247,22 +248,21 @@ void Graph<T, C>::unweighted(const T& sKey)
 //打印到目标节点的路径
 //@Param desV 目标节点的指针
 template<typename T, typename C>
-void Graph<T, C>::printPath(const VertexNode*& desV) const
+void Graph<T, C>::printPath(const VertexNode* desV) const
 {
-    VertexNode* pre = vertex->prePath;
-    if (desV!=nullptr)
+    if (desV->prePath!=nullptr)
     {
         printPath(desV->prePath);
         std::cout<<" to ";
     }
-    std::cout<<desV->key<<std::endl;
+    std::cout<<desV->key;
 }
 
 //封装后的公有方法
 template<typename T, typename C>
-void Graph<T, C>::printPath(const T& desKey) const
+void Graph<T, C>::printPath(const T& desKey)
 {
-    VertexNode* desV = findVertex(deskey);
+    VertexNode* desV = findVertex(desKey);
     printPath(desV);
 }
 
@@ -270,7 +270,7 @@ template<typename T, typename C>
 void Graph<T, C>::dijkstra(const T& sKey)
 {
     std::set<VertexNode*> unknownVertexGroup;    //还未确定最短路径的顶点的集合
-    std::set<VertexNode*> knownVertexGroup;      //已经确定最短路径的集合
+    // std::set<VertexNode*> knownVertexGroup;      //已经确定最短路径的集合
 
     for (auto &vertex : vertexList)
     {
@@ -283,7 +283,7 @@ void Graph<T, C>::dijkstra(const T& sKey)
     source->dist = 0;
 
     VertexNode* smallestDist = nullptr;
-    VertexNode* tmp = nullptr;
+    ArcNode* tmp = nullptr;
     while (!unknownVertexGroup.empty())
     {
         smallestDist = *(unknownVertexGroup.begin());   
@@ -307,6 +307,7 @@ void Graph<T, C>::dijkstra(const T& sKey)
                     tmp->adjAddr->prePath = smallestDist;
                 }
             }
+            tmp = tmp->next;
         }
         unknownVertexGroup.erase(smallestDist); //用完了smallestDist再删
     }
