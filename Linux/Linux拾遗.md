@@ -66,3 +66,9 @@ sudo tee /proc/acpi/bbswitch <<< ON
   在命令行模式中输入`split 另一个文件名`，vim就会将窗口分割成两个部分，分别显示当前文件和你输入的另一个文件，默认是上下分割，也可以使用左右分割的命令：`vsplit`。可以使用split命令打开多个文件，请君自行探索。
 
   如何在这些窗口中切换？按住`Ctrl`，再双击w键。
+
+
+
+# 关于每次启动shell自动运行某个脚本的方法
+
+https://blog.csdn.net/stpeace/article/details/49031389
