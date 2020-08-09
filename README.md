@@ -1,4 +1,4 @@
-# 一些说明
+# 相关说明
 
 以下是各笔记相关的学习书籍、资料：
 
@@ -19,20 +19,26 @@
 5. Machine Learning
    - 《Machine Learning》.coursera mooc.吴恩达
    - 人工智能实践：TensorFlow笔记.北京大学MOOC
-
 6. 嵌入式
 
    - 《STM32库开发实战指南》.刘火良、杨森
+7. 计算机组成+体系结构
+
+   - 《计算机组成与设计：硬件/软件接口》. [美]David A.Patterson / [美]John L.Hennessy
+   - 计算机硬件系统设计. 华中科技大学 谭志虎. 中国大学mooc
 
 
 
-> PS（update on 2020.7.23）:
->
-> 寒假计划：
->
-> - [x] 跟着《自己动手写CPU》把代码敲一遍并理解
->- [x] 完成大创的任务
-> - [x] 看完《数据结构与算法分析》/《数据结构（C++语言版）》
->- [ ] 了解IC设计（ing）
-> - [ ] 刷题
 
+
+# 相关资料/博客推荐
+
+
+
+## 数字IC/FPGA设计
+
+大佬の博客：
+
+- [咸鱼FPGA](https://www.cnblogs.com/xianyufpga/)
+
+  
