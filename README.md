@@ -35,6 +35,10 @@
 
 
 
+真·大佬
+
+- [稚晖君](http://pengzhihui.xyz/)
+
 ## 数字IC/FPGA设计
 
 大佬の博客：
