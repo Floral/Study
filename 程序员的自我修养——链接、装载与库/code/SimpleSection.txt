@@ -1,0 +1,189 @@
+Microsoft (R) COFF/PE Dumper Version 14.27.29111.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file SimpleSection.obj
+
+File Type: COFF OBJECT
+
+FILE HEADER VALUES
+             14C machine (x86)
+               6 number of sections
+        5F890818 time date stamp Fri Oct 16 10:40:24 2020
+             290 file pointer to symbol table
+              16 number of symbols
+               0 size of optional header
+               0 characteristics
+
+SECTION HEADER #1
+.drectve name
+       0 physical address
+       0 virtual address
+      18 size of raw data
+     104 file pointer to raw data (00000104 to 0000011B)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+  100A00 flags
+         Info
+         Remove
+         1 byte align
+
+RAW DATA #1
+  00000000: 20 20 20 2F 44 45 46 41 55 4C 54 4C 49 42 3A 22     /DEFAULTLIB:"
+  00000010: 4C 49 42 43 4D 54 22 20                          LIBCMT" 
+
+   Linker Directives
+   -----------------
+   /DEFAULTLIB:LIBCMT
+
+SECTION HEADER #2
+.debug$S name
+       0 physical address
+       0 virtual address
+      B8 size of raw data
+     11C file pointer to raw data (0000011C to 000001D3)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+42100040 flags
+         Initialized Data
+         Discardable
+         1 byte align
+         Read Only
+
+RAW DATA #2
+  00000000: 04 00 00 00 F1 00 00 00 A9 00 00 00 6B 00 01 11  ....ñ...©...k...
+  00000010: 00 00 00 00 43 3A 5C 4D 79 44 6F 63 75 6D 65 6E  ....C:\MyDocumen
+  00000020: 74 5C 53 74 75 64 79 5F 4E 6F 74 65 73 5C E7 A8  t\Study_Notes\ç¨
+  00000030: 8B E5 BA 8F E5 91 98 E7 9A 84 E8 87 AA E6 88 91  .åº.å..ç..è.ªæ..
+  00000040: E4 BF AE E5 85 BB E2 80 94 E2 80 94 E9 93 BE E6  ä¿®å.»â..â..é.¾æ
+  00000050: 8E A5 E3 80 81 E8 A3 85 E8 BD BD E4 B8 8E E5 BA  .¥ã..è£.è½½ä¸.åº
+  00000060: 93 5C 63 6F 64 65 5C 53 69 6D 70 6C 65 53 65 63  .\code\SimpleSec
+  00000070: 74 69 6F 6E 2E 6F 62 6A 00 3A 00 3C 11 00 22 00  tion.obj.:.<..".
+  00000080: 00 07 00 13 00 1B 00 B7 71 00 00 13 00 1B 00 B7  .......·q......·
+  00000090: 71 00 00 4D 69 63 72 6F 73 6F 66 74 20 28 52 29  q..Microsoft (R)
+  000000A0: 20 4F 70 74 69 6D 69 7A 69 6E 67 20 43 6F 6D 70   Optimizing Comp
+  000000B0: 69 6C 65 72 00 00 00 00                          iler....
+
+SECTION HEADER #3
+   .data name
+       0 physical address
+       0 virtual address
+       C size of raw data
+     1D4 file pointer to raw data (000001D4 to 000001DF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+C0300040 flags
+         Initialized Data
+         4 byte align
+         Read Write
+
+RAW DATA #3
+  00000000: 54 00 00 00 25 64 0A 00 55 00 00 00              T...%d..U...
+
+SECTION HEADER #4
+.text$mn name
+       0 physical address
+       0 virtual address
+      4E size of raw data
+     1E0 file pointer to raw data (000001E0 to 0000022D)
+     22E file pointer to relocation table
+       0 file pointer to line numbers
+       5 number of relocations
+       0 number of line numbers
+60500020 flags
+         Code
+         16 byte align
+         Execute Read
+
+RAW DATA #4
+  00000000: 55 8B EC 8B 45 08 50 68 00 00 00 00 E8 00 00 00  U.ì.E.Ph....è...
+  00000010: 00 83 C4 08 5D C3 CC CC CC CC CC CC CC CC CC CC  ..Ä.]ÃÌÌÌÌÌÌÌÌÌÌ
+  00000020: 55 8B EC 83 EC 08 C7 45 FC 01 00 00 00 A1 00 00  U.ì.ì.ÇEü....¡..
+  00000030: 00 00 03 05 00 00 00 00 03 45 FC 03 45 F8 50 E8  .........Eü.EøPè
+  00000040: 00 00 00 00 83 C4 04 8B 45 FC 8B E5 5D C3        .....Ä..Eü.å]Ã
+
+RELOCATIONS #4
+                                                Symbol    Symbol
+ Offset    Type              Applied To         Index     Name
+ --------  ----------------  -----------------  --------  ------
+ 00000008  DIR32                      00000000         F  $SG6034
+ 0000000D  REL32                      00000000         C  _printf
+ 0000002E  DIR32                      00000000        10  ?static_var@?1??main@@9@9 (`main'::`2'::static_var)
+ 00000034  DIR32                      00000000        13  ?static_var2@?1??main@@9@9 (`main'::`2'::static_var2)
+ 00000040  REL32                      00000000         D  _func1
+
+SECTION HEADER #5
+    .bss name
+       0 physical address
+       0 virtual address
+       4 size of raw data
+       0 file pointer to raw data
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+C0300080 flags
+         Uninitialized Data
+         4 byte align
+         Read Write
+
+SECTION HEADER #6
+ .chks64 name
+       0 physical address
+       0 virtual address
+      30 size of raw data
+     260 file pointer to raw data (00000260 to 0000028F)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+     A00 flags
+         Info
+         Remove
+         (no align specified)
+
+RAW DATA #6
+  00000000: 27 88 7E BB A5 BD F8 78 3B CD 6A 83 8F 73 A2 B6  '.~»¥½øx;Íj..s¢¶
+  00000010: 54 E7 F0 7A A1 2E 3E 48 23 4C C9 8E F0 57 16 F7  Tçðz¡.>H#LÉ.ðW.÷
+  00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+
+COFF SYMBOL TABLE
+000 010471B7 ABS    notype       Static       | @comp.id
+001 80000191 ABS    notype       Static       | @feat.00
+002 00000000 SECT1  notype       Static       | .drectve
+    Section length   18, #relocs    0, #linenums    0, checksum        0
+004 00000000 SECT2  notype       Static       | .debug$S
+    Section length   B8, #relocs    0, #linenums    0, checksum        0
+006 00000000 SECT3  notype       Static       | .data
+    Section length    C, #relocs    0, #linenums    0, checksum AC5AB941
+008 00000000 SECT3  notype       External     | _global_init_var
+009 00000004 UNDEF  notype       External     | _global_uninit_var
+00A 00000000 SECT4  notype       Static       | .text$mn
+    Section length   4E, #relocs    5, #linenums    0, checksum CC61DB94
+00C 00000000 UNDEF  notype ()    External     | _printf
+00D 00000000 SECT4  notype ()    External     | _func1
+00E 00000020 SECT4  notype ()    External     | _main
+00F 00000004 SECT3  notype       Static       | $SG6034
+010 00000008 SECT3  notype       Static       | ?static_var@?1??main@@9@9 (`main'::`2'::static_var)
+011 00000000 SECT5  notype       Static       | .bss
+    Section length    4, #relocs    0, #linenums    0, checksum        0
+013 00000000 SECT5  notype       Static       | ?static_var2@?1??main@@9@9 (`main'::`2'::static_var2)
+014 00000000 SECT6  notype       Static       | .chks64
+    Section length   30, #relocs    0, #linenums    0, checksum        0
+
+String Table Size = 0x5D bytes
+
+  Summary
+
+           4 .bss
+          30 .chks64
+           C .data
+          B8 .debug$S
+          18 .drectve
+          4E .text$mn

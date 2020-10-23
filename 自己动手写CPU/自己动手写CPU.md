@@ -8,7 +8,7 @@ ISA将编程所需了解的硬件信息从硬件系统中抽象出来。从软�
 
 ### 微架构（Microarchitecture）
 
-微架构是ISA的一个具体实现。ISA好比设计规范，微架构则是具体实现。用编程里的概念类比，ISA就是接口（所能实现的各种功能），微架构就是实现功能的具体方式（采用的不同的算法），因此，同样的ISA，不同的微架构，会带来不同的性能。
+微架构是ISA的一个具体实现。ISA好比设计规范，微架构则是具体实现。用编程里的概念类比，ISA就是接口（所能实现的各种功能），微架构就是实现功能的具体方式（采用的不同的电路），因此，同样的ISA，不同的微架构，会带来不同的性能。
 
 - ISA主要分为CISC和RISC。
 - CISC目前主流只有x86
@@ -93,8 +93,6 @@ https://blog.csdn.net/qq_42914528/article/details/81779727
 本章要实现的移动操作指令中有四条涉及**两个特殊寄存器HI、LO**。所以需要先新增HI、LO两个特殊寄存器，独立于regfile，位于回写阶段。
 
 由于本章实现的移动操作指令造成的**数据相关的问题**包括普通寄存器regfile和特殊寄存器HI、LO的，前者已经在第五章解决了，因此我们在这里只需增加解决HI、LO两个寄存器的数据相关问题。这里我们的设计是：**译码阶段并不直接读取HI、LO的数值，而是在执行阶段才读取**，所以**新增的MUX放在执行阶段**，数据进入ALU之前。在哪个阶段加MUX，就要在修改哪个阶段的代码（虽然听着是个废话），数据通路是通过修改顶层文件openmips来实现的，顶层文件的本质就是按照数据流图连线。
-
-
 
 
 
@@ -474,15 +472,15 @@ MIPS32架构定义了处理器的两种工作模式：**用户模式、内核模
 
 前面11章，我们实现了教学版的OpenMIPS处理器，其SOPC结构如下：
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\教学版OpenMIPS的最小SOPC结构.jpg" alt="教学版OpenMIPS的最小SOPC结构" style="zoom: 33%;" />
+<img src=".\pic\教学版OpenMIPS的最小SOPC结构.jpg" alt="教学版OpenMIPS的最小SOPC结构" style="zoom: 33%;" />
 
 其ROM和RAM都位于FPGA内部，但是在实际的应用中，由于ROM和RAM的需求都比较大，以至于不可能集成在FPGA中了（实际的ROM使用的是Flash，RAM是SDRAM），于是我们需要向OpenMIPS添加对应外部设备的控制器，例如：Flash控制器和SDRAM控制器。
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\实用化OpenMIPS的最小SOPC结构.jpg" alt="实用化OpenMIPS的最小SOPC结构" style="zoom:33%;" />
+<img src=".\pic\实用化OpenMIPS的最小SOPC结构.jpg" alt="实用化OpenMIPS的最小SOPC结构" style="zoom:33%;" />
 
 很容易发现，我们每次为OpenMIPS添加外部设备，都需要在OpenMIPS内部添加相应的**控制器**，这很麻烦，不符合人类“懒”的天性，于是懒懒的人类便想出了总线这一方案。熟悉PC的人知道，主板上面有PCI（Peripheral Component Interconnect），其就是PCI总线的接口，中文名为外部控制器接口，许多设备即插即用（内存，网卡等）。借鉴这种结构，本章也要为我们的OpenMIPS加上总线结构，加上总线后，我们只需在OpenMIPS上添加两个（哈佛结构的原因）与总线相连的接口即可“一劳永逸”，两个接口分别为：**指令总线接口、数据总线接口**。添加外部设备时，当然还是需要控制器啦，但是这次我们可以使用已有的开源的IP核，为了方便连接，许多公司的IP核遵守相同的总线规范（总线规范定义了IP核之间的通用接口）。控制器的一端与总线相连，另一端与外设相连，即构成了通信通路，如下图。
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\使用总线的OpenMIPS的最小SOPC结构.jpg" alt="使用总线的OpenMIPS的最小SOPC结构" style="zoom:33%;" />
+<img src=".\pic\使用总线的OpenMIPS的最小SOPC结构.jpg" alt="使用总线的OpenMIPS的最小SOPC结构" style="zoom:33%;" />
 
 > IP核（Intellectual Property core）是一段具有特定电路功能的硬件描述语言程序，该程序与集成电路工艺无关，可以移植到不同的半导体工艺中去生产集成电路芯片。
 >
@@ -496,7 +494,7 @@ MIPS32架构定义了处理器的两种工作模式：**用户模式、内核模
 
 Wishbone总线接口有多种连接方式：**点对点、数据流、共享总线、交叉互联**等。我们首先介绍点对点的方式，该方式包括一个主设备和一个从设备，它是最基本的方式，其接口与其他方式相同，示意图如下：
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_1.JPG" alt="chapter12_1" style="zoom: 10%;" />
+<img src=".\pic\chapter12_1.JPG" alt="chapter12_1" style="zoom: 10%;" />
 
 
 
@@ -512,21 +510,21 @@ CLK、RST、WE（Write Enable）、ADR（Address）这些相信大家都很熟�
 
 先出教学版和实践版的接口图：
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_2.JPG" alt="chapter12_2" style="zoom:10%;" />
+<img src=".\pic\chapter12_2.JPG" alt="chapter12_2" style="zoom:10%;" />
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_3.JPG" alt="chapter12_3" style="zoom:10%;" />
+<img src=".\pic\chapter12_3.JPG" alt="chapter12_3" style="zoom:10%;" />
 
 从这两张图可以看出，我们将原本IF阶段、MEM阶段与ROM和RAM直接相连的输入输出都换成了wishbone的标准接口形式，其中iwishbone代表的是instruction wishbone，dwishbone代表的是data wishbone，分别是IF、MEM阶段的输出。
 
 在OpenMIPS内部，实现思路是使PC模块和MEM模块分别与标准的Wishbone总线接口模块相连，再连接至外部总线，结构简图如下：
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_4.JPG" alt="chapter12_4" style="zoom:10%;" />
+<img src=".\pic\chapter12_4.JPG" alt="chapter12_4" style="zoom:10%;" />
 
 
 
 具体实现如下：
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter12_5.JPG" alt="chapter12_5" style="zoom:15%;" />
+<img src=".\pic\chapter12_5.JPG" alt="chapter12_5" style="zoom:15%;" />
 
 由于Wishbone总线接口都是有规范的，所以我们只需写好一个模块，然后实例化多个就行了。
 
@@ -553,11 +551,11 @@ Wishbone总线接口的具体实现是一个有限状态机，同时包含给处
 
 本章建立小型SOPC的方式是交叉互联的方式。
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter13_1.JPG" alt="chapter13_1" style="zoom:15%;" />
+<img src=".\pic\chapter13_1.JPG" alt="chapter13_1" style="zoom:15%;" />
 
 其中实际的Wishbone总线采用的是开源的WB_CONMAX模块，这是一个Wishbone总线互联矩阵，采用的是交叉互联的方式，具体结构图如下：
 
-<img src="E:\Documents\Study_Notes\自己动手写CPU\pic\chapter13_2.JPG" alt="chapter13_2" style="zoom:15%;" />
+<img src=".\pic\chapter13_2.JPG" alt="chapter13_2" style="zoom:15%;" />
 
 其中：
 
