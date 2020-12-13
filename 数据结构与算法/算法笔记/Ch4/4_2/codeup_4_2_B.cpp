@@ -2,10 +2,11 @@
 #include<cstring>
 #define maxn 110
 
-bool ifExist[10005] = {false};
+bool ifExist[2000] = {false};   //存在哪些数
+bool clsExist[maxn] = {false};  //存在哪些组
 
 int firstLine[maxn] = {0};
-int cls[maxn][10005] = {0};
+int cls[maxn][2000] = {0};
 
 int main()
 {
@@ -17,6 +18,7 @@ int main()
     while (m--)
     {
         memset(ifExist, 0, sizeof(ifExist));
+        memset(clsExist, 0, sizeof(clsExist));
         memset(firstLine, 0, sizeof(firstLine));
         memset(cls, 0, sizeof(cls));
         maxc = 0;
@@ -31,6 +33,7 @@ int main()
         for (size_t i = 0; i < n; i++)
         {
             scanf("%d", &c);
+            clsExist[c] = true;
             cls[c][firstLine[i]]++;
             if (c>maxc)
             {
@@ -38,11 +41,14 @@ int main()
             }
         }
 
-        for (size_t i = 1; i <= maxc; i++)
+        for (size_t i = 0; i <= maxc; i++)
         {
+            if (clsExist[i] == false)
+                continue;
+            
             printf("%d={", i);
             int flag = 1;
-            for (size_t j = 0; j < 10005; j++)
+            for (size_t j = 0; j <= 2000; j++)
             {
                 if (ifExist[j])
                 {
